@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  master:
+    build: ./base_node
+    entrypoint: ./master_entrypoint.sh
+    volumes:
+      - ./examples:/home/mpiuser/examples:cached
+    depends_on:
+      - slave
+
+  slave:
+    build: ./base_node
+    entrypoint: ./slave_entrypoint.sh
+
