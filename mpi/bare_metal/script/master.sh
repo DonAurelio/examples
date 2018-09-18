@@ -252,7 +252,7 @@ case $key in
     setting_up_nfs
     setting_up_mpi
     shift # past argument
-    shift # past value
+    # shift # past value
     ;;
     -add_slave)
     HOST_IP="$2"

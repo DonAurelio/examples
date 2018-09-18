@@ -178,7 +178,8 @@ function add_master(){
   # we add it.
   if [ $output -eq 0 ] # -n not null
   then
-    echo "Adding the $host_address IP address with host name slave_$host_number to /etc/hosts on master"
+    echo "Adding the master host $host_address to /etc/hosts on master"
+    write_log "Adding the master host $host_address to /etc/hosts on master"
     echo -e "$host_address\tmaster" >> /etc/hosts
     echo "Master host $host_address added succesfully"
     write_log "Master host $host_address added succesfully"
@@ -203,7 +204,7 @@ case $key in
     setting_up_nfs
     setting_up_mpi
     shift # past argument
-    shift # past value
+    # shift # past value
     ;;
     -set_master_node)
     HOST_IP="$2"
@@ -215,7 +216,7 @@ case $key in
     # HOST_IP="$2"
     mount_master_shared_dir
     shift # past argument
-    shift # past value
+    # shift # past value
     ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later
