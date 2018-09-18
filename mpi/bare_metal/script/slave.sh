@@ -113,13 +113,11 @@ function mount_master_shared_dir(){
 
   output="$(grep master /etc/hosts)"
 
-  # If the host 'master' does not exits in /etc/hosts
+  # If the host 'master' does exits in /etc/hosts
   # we add it.
-  if [ -n $output ]
+  if [ -n $output ] # -n not null
   then
-    echo "Host 'master' is not defined in /etc/hosts"
-    write_log "Host 'master' is not defined in /etc/hosts"
-  else
+
     # Mounting the remote directory on behalf of mpi user
     output=$(su -c "echo 'mpiuser' | sudo -S mount -t nfs master:/home/mpiuser/cloud /home/mpiuser/cloud" mpiuser)
     
@@ -131,6 +129,10 @@ function mount_master_shared_dir(){
       echo "Error: Remote /master:/home/mpiuser/cloud folder could be mounted" >&2
       write_log "Error: Remote /master:/home/mpiuser/cloud folder could be mounted"
     fi
+
+  else
+    echo "Host 'master' is not defined in /etc/hosts"
+    write_log "Host 'master' is not defined in /etc/hosts"
   fi
 }
 
@@ -170,19 +172,21 @@ function add_master(){
 
   output="$(grep $host_address /etc/hosts)"
 
-  # If the host_address does not exits in /etc/hosts
+  # If the host_address exits in /etc/hosts
   # we add it.
-  if [ -n $output ]
+  if [ -n $output ] # -n not null
   then
-    echo "Adding the ${host_address} IP address with host name slave_$host_number to /etc/hosts on master"
-    echo -e "$host_address\tmaster" >> /etc/hosts
-    echo "Master host $host_address added succesfully"
-    write_log "Master host $host_address added succesfully"
-  else
     echo "Master host $host_address already exits" >&2
     write_log "Master hosts $host_address already exits"
     echo $output
     write_log $output
+  else
+    echo "Adding the ${host_address} IP address with host name slave_$host_number to /etc/hosts on master"
+    echo -e "$host_address\tmaster" >> /etc/hosts
+    echo "Master host $host_address added succesfully"
+    write_log "Master host $host_address added succesfully"
+
+
   fi
 }
 
