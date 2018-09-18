@@ -170,23 +170,21 @@ function add_master(){
 
   local host_address=${1}
 
-  output="$(grep $host_address /etc/hosts)"
+  output="$(grep $host_address /etc/hosts | wc -l)"
 
   # If the host_address exits in /etc/hosts
   # we add it.
-  if [ -n $output ] # -n not null
+  if [ $output -eq 0 ] # -n not null
   then
-    echo "Master host $host_address already exits" >&2
-    write_log "Master hosts $host_address already exits"
-    echo $output
-    write_log $output
-  else
     echo "Adding the ${host_address} IP address with host name slave_$host_number to /etc/hosts on master"
     echo -e "$host_address\tmaster" >> /etc/hosts
     echo "Master host $host_address added succesfully"
     write_log "Master host $host_address added succesfully"
-
-
+  else
+    echo "Master host $host_address already exits" >&2
+    write_log "Master hosts $host_address already exits"
+    echo $output
+    write_log $output
   fi
 }
 
