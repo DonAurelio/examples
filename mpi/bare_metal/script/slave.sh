@@ -128,8 +128,10 @@ function mount_master_shared_dir(){
       echo "/master:/home/mpiuser/cloud mounted"
       write_log "/master:/home/mpiuser/cloud mounted"
     else
-      echo "Error: Remote /master:/home/mpiuser/cloud folder could be mounted" >&2
-      write_log "Error: Remote /master:/home/mpiuser/cloud folder could be mounted"
+      echo "Error: Remote /master:/home/mpiuser/cloud folder could not be mounted" >&2
+      echo "Error: Probably master node is not sharing it" >&2
+      write_log "Error: Remote /master:/home/mpiuser/cloud folder could not be mounted"
+      write_log "Error: Probably master node is not sharing it"
     fi
   fi
 }
