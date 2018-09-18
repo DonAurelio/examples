@@ -19,7 +19,7 @@ function write_log(){
 
 # Create and MPI user on the Master node
 function create_mpi_user(){
-  echo "Creating the MPI user $MPI_USER"
+  echo "* Creating the MPI user $MPI_USER"
   write_log "Creating the MPI user $MPI_USER"
 
   # Adding an MPI user to run MPI jobs
@@ -41,7 +41,7 @@ function create_mpi_user(){
 
 # Install and start the ssh server
 function setting_up_ssh(){
-  echo "Setting up the ssh server"
+  echo "* Setting up the ssh server"
   write_log "Setting up the ssh server"
 
   apt-get $APT_GET_FLAGS update
@@ -72,7 +72,7 @@ function setting_up_ssh(){
 
 
 function setting_up_nfs(){
-  echo "Setting NFS Server"
+  echo "* Setting NFS Server"
   write_log "Setting NFS Server"
 
   apt-get $APT_GET_FLAGS update
@@ -92,7 +92,7 @@ function setting_up_nfs(){
   apt-get $APT_GET_FLAGS install nfs-common
 
   echo "Creating NFS shared directory /home/$MPI_USER/cloud"
-  write_log "Installing NFS Client"
+  write_log "Creating NFS shared directory /home/$MPI_USER/cloud"
   # Creating the shared directory
   mkdir -p "/home/$MPI_USER/cloud"
 
@@ -105,7 +105,7 @@ function setting_up_nfs(){
 
 
 function mount_master_shared_dir(){
-  echo "Mounting remote master:/home/mpiuser/cloud"
+  echo "* Mounting remote master:/home/mpiuser/cloud"
   write_log "Mounting remote  master:/home/mpiuser/cloud"
 
   echo "Checking if master host is already configured"
@@ -138,7 +138,7 @@ function mount_master_shared_dir(){
 
 
 function setting_up_mpi(){
-  echo "Setting up MPI"
+  echo "* Setting up MPI"
   # Installing OpenMPI library
   apt-get $APT_GET_FLAGS update
 
@@ -165,7 +165,7 @@ function setting_up_mpi(){
 
 
 function add_master(){
-  echo "Adding a new host to /etc/hosts"
+  echo "* Adding a new host to /etc/hosts"
   write_log "Adding a new host to /etc/hosts"
 
   local host_address=${1}
@@ -176,7 +176,7 @@ function add_master(){
   # we add it.
   if [ $output -eq 0 ] # -n not null
   then
-    echo "Adding the ${host_address} IP address with host name slave_$host_number to /etc/hosts on master"
+    echo "Adding the $host_address IP address with host name slave_$host_number to /etc/hosts on master"
     echo -e "$host_address\tmaster" >> /etc/hosts
     echo "Master host $host_address added succesfully"
     write_log "Master host $host_address added succesfully"
