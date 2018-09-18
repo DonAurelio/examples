@@ -80,28 +80,28 @@ function setting_up_ssh_keys(){
   write_log "* Setting up private and public ssh keys"
 
   # Checking if the mpi ssh key already exists
-  if [ -f '~/.ssh/mpi/id_rsa' ]
+  if [ -f '/home/mpiuser/.ssh/mpi/id_rsa' ]
   then
     echo "You already have an MPI ssh key"
     write_log "You already have an MPI ssh key"
   else
-    echo "Creating a folder ~/.ssh/mpi/ to hold MPI SSH keys"
-    write_log "Creating a folder ~/.ssh/mpi/ to hold MPI SSH keys"
+    echo "Creating a folder '/home/mpiuser/.ssh/mpi/' to hold MPI SSH keys"
+    write_log "Creating a folder '/home/mpiuser/.ssh/mpi/' to hold MPI SSH keys"
 
     # Creating a folder to hold MPI SSH keys
-    mkdir -p ~/.ssh/mpi/
+    mkdir -p /home/mpiuser/.ssh/mpi/
 
     echo "Creating the private and public ssh keys"
-    write_log "Creating a folder ~/.ssh/mpi/ to hold MPI SSH keys"
+    write_log "Creating the private and public ssh keys"
     # We use su -c "command" mpiuser
     # to run the following commands from 
     # root on behalf of mpiuser 
     # Creationg the public and private keys
-    su -c "ssh-keygen -t rsa -N '' -f ~/.ssh/mpi/id_rsa" ${MPI_USER}
+    su -c "ssh-keygen -t rsa -N '' -f /home/mpiuser/.ssh/mpi/id_rsa" ${MPI_USER}
     # Avoid checking if the remote host is reliable
-    su -c "echo 'StrictHostKeyChecking=no' >> ~/.ssh/config" ${MPI_USER}
+    su -c "echo 'StrictHostKeyChecking=no' >> /home/mpiuser/.ssh/config" ${MPI_USER}
     # Sharing the public key with myself
-    su -c "sshpass -p '${MPI_USER}' ssh-copy-id -i ~/.ssh/mpi/id_rsa  localhost" ${MPI_USER}
+    su -c "sshpass -p '${MPI_USER}' ssh-copy-id -i /home/mpiuser/.ssh/mpi/id_rsa  localhost" ${MPI_USER}
 
   fi
   echo "Setting up private and public ssh keys finished succesfully"
