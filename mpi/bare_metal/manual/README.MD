@@ -4,8 +4,8 @@ This folder contains configuration scripts to configure manually a LAN MPI Clust
 
 ## Requirements
 
-* Two run the configurations scripts both machines need to be turn on.
-* The scripts must run as root user.
+* Master and Slave machines need communicated over the network.
+* The scripts must be run as root user.
 
 ## Configuration Steps
 

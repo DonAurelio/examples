@@ -249,7 +249,7 @@ case $key in
     shift # past argument
     shift # past value
     ;;
-    -share_public_key)
+    -add_host)
     HOST_IP="$2"
     add_host $HOST_IP
     share_ssh_public_key $HOST_IP

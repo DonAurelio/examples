@@ -4,18 +4,36 @@ This folder contains configuration scripts to configure manually a LAN MPI Clust
 
 ## Requirements
 
-* Two run the configurations scripts both machines need to be turned on.
-* The scripts must run as root user.
+* Master and Slave machines need communicated over the network
+* The scripts must be run as root user.
 
 ## Configuration Steps
 
-The following configuration scripts have the following format: number.program_machine.sh. i.e., the 1.ssh_slave.sh is the first script you have to run to install the **ssh server** in a **slave node**. 2.ssh_master.sh is the second and so on.
+The following configuration scripts have the following format: <machine>.sh. i.e., the slave.sh is the script that must be used in a **slave node**.
 
 **NOTE: Run the following scripts under the root user**
 
-Setting up the ssh server in the Slave and Master nodes
+Setting up the Master and Slave nodes
 
-In construction ....
+1. Configure the Master Node: the configuration create an mpiuser, setting up ssh, ssh keys, nfs and mpi.
+
+```sh
+sh master.sh -config
+```
+
+2. Configure the Slave Node: create an mpiuser, setting up ssh, mpi, add the Master Node Address to /etc/hosts, and mount the master remove /home/mpi/cloud shared network directory.
+
+```sh
+sh slave.sh -config -add_master master_ip -mount_master_dir
+```
+
+3. Add configured Slave Nodes to the Master
+
+```sh
+sh master.sh -add_host new_slave_ip
+```
+
+For every new Slave Node perform steps 2 and 3.
 
 ## References
 
