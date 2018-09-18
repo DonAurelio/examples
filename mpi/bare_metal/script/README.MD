@@ -24,13 +24,13 @@ sh master.sh -config
 2. Configure the Slave Node: create an mpiuser, setting up ssh, mpi, add the Master Node Address to /etc/hosts, and mount the master remove /home/mpi/cloud shared network directory.
 
 ```sh
-sh slave.sh -config -add_master master_ip -mount_master_dir
+sh slave.sh -config -set_master_node master_ip -mount_master_dir
 ```
 
 3. Add configured Slave Nodes to the Master
 
 ```sh
-sh master.sh -add_host new_slave_ip
+sh master.sh -add_slave new_slave_ip
 ```
 
 For every new Slave Node perform steps 2 and 3.

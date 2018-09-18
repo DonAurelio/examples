@@ -19,8 +19,8 @@ function write_log(){
 
 # Create and MPI user on the Master node
 function create_mpi_user(){
-  echo "Creating the MPI user $MPI_USER"
-  write_log "Creating the MPI user $MPI_USER"
+  echo "* Creating the MPI user $MPI_USER"
+  write_log "* Creating the MPI user $MPI_USER"
 
   # Adding an MPI user to run MPI jobs
   adduser --disabled-password --gecos "" $MPI_USER
@@ -41,8 +41,8 @@ function create_mpi_user(){
 
 # Install and start the ssh server
 function setting_up_ssh(){
-  echo "Setting up the ssh server"
-  write_log "Setting up the ssh server"
+  echo "* Setting up the ssh server"
+  write_log "* Setting up the ssh server"
 
   apt-get $APT_GET_FLAGS update
 
@@ -76,8 +76,8 @@ function setting_up_ssh(){
 
 # Create a private and public ssk keys
 function setting_up_ssh_keys(){
-  echo "Setting up private and public ssh keys"
-  write_log "Setting up private and public ssh keys"
+  echo "* Setting up private and public ssh keys"
+  write_log "* Setting up private and public ssh keys"
 
   # Checking if the mpi ssh key already exists
   if [ -f '~/.ssh/mpi/id_rsa' ]
@@ -110,7 +110,9 @@ function setting_up_ssh_keys(){
 
 
 function setting_up_mpi(){
-  echo "Setting up MPI"
+  echo "* Setting up MPI"
+  write_log "* Setting up MPI"
+
   # Installing OpenMPI library
   apt-get $APT_GET_FLAGS update
 
@@ -137,8 +139,8 @@ function setting_up_mpi(){
 
 
 function setting_up_nfs(){
-  echo "Setting NFS Server"
-  write_log "Setting NFS Server"
+  echo "* Setting NFS Server"
+  write_log "* Setting NFS Server"
 
   apt-get $APT_GET_FLAGS update
 
@@ -191,8 +193,8 @@ function setting_up_nfs(){
 
 # Add a Slave in the /etc/hosts file
 function add_host(){
-  echo "Adding a new host to /etc/hosts"
-  write_log "Adding a new host to /etc/hosts"
+  echo "* Adding a new host to /etc/hosts"
+  write_log "* Adding a new host to /etc/hosts"
 
   local host_address=${1}
 
@@ -216,6 +218,9 @@ function add_host(){
 
 # Send the public ssh key to a slave node
 function share_ssh_public_key(){
+  echo "* Share public ssh key"
+  write_log "* Share public ssh key"
+
   local host_address=$2
 
   # Checking if the mpi ssh key already exists
@@ -249,7 +254,7 @@ case $key in
     shift # past argument
     shift # past value
     ;;
-    -add_host)
+    -add_slave)
     HOST_IP="$2"
     add_host $HOST_IP
     share_ssh_public_key $HOST_IP
