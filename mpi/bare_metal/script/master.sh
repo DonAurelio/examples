@@ -161,7 +161,7 @@ function setting_up_nfs(){
   # Indicating the directory that will be shared
   # sed -e '/home/mpiuser/cloud *(rw,sync,no_root_squash,no_subtree_check)' -ibak /etc/exports
 
-  output = $(grep "/home/$MPI_USER/cloud" /etc/exports | wc -l)
+  output=$(grep "/home/$MPI_USER/cloud" /etc/exports | wc -l)
 
   if [ -z $output ]
   then
@@ -196,8 +196,8 @@ function add_host(){
 
   local host_address=${1}
 
-  host_number = "$(grep slave_ /etc/hosts | wc -l)"
-  output = "$(grep $host_address /etc/hosts)"
+  host_number="$(grep slave_ /etc/hosts | wc -l)"
+  output="$(grep $host_address /etc/hosts)"
 
   # If the host_address does not exits in /etc/hosts
   # we add it.
