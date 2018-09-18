@@ -197,23 +197,19 @@ function add_host(){
   local host_address=${1}
 
   host_number="$(grep slave_ /etc/hosts | wc -l)"
-  output="$(grep $host_address /etc/hosts)"
+  output="$(grep $host_address /etc/hosts | wc -l)"
 
-  # If the host_address does exits in /etc/hosts
+  # If the host_address does not exits in /etc/hosts
   # we add it.
-  if [ -n $output ] # -m not null
+  if [ $output -eq 0 ]
   then
-    echo "The hosts $host_address already exits" >&2
-    write_log "The hosts $host_address already exits"
-    echo $output
-    write_log $output
-    echo "Host ${host_address} could not be added to /etc/hosts" >&2
-    write_log "Host ${host_address} could not be added to /etc/hosts"
-  else
     echo "Adding the ${host_address} IP address with host name slave_$host_number to /etc/hosts on master"
     echo -e "$host_address\tslave_$host_number" >> /etc/hosts
     echo "Host added succesfully"
     write_log "Host added succesfully"
+  else
+    echo "The hosts $host_address already exits" >&2
+    write_log "The hosts $host_address already exits"
   fi
 }
 

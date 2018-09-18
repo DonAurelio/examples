@@ -111,13 +111,15 @@ function mount_master_shared_dir(){
   echo "Checking if master host is already configured"
   write_log "Checking if master host is already configured"
 
-  output="$(grep master /etc/hosts)"
+  output="$(grep master /etc/hosts | wc -l)"
 
-  # If the host 'master' does exits in /etc/hosts
+  # If the host 'master' does not exits in /etc/hosts
   # we add it.
-  if [ -n $output ] # -n not null
+  if [ $output -eq 0 ] # -n not null
   then
-
+    echo "Host 'master' is not defined in /etc/hosts"
+    write_log "Host 'master' is not defined in /etc/hosts"
+  else
     # Mounting the remote directory on behalf of mpi user
     output=$(su -c "echo 'mpiuser' | sudo -S mount -t nfs master:/home/mpiuser/cloud /home/mpiuser/cloud" mpiuser)
     
@@ -129,10 +131,6 @@ function mount_master_shared_dir(){
       echo "Error: Remote /master:/home/mpiuser/cloud folder could be mounted" >&2
       write_log "Error: Remote /master:/home/mpiuser/cloud folder could be mounted"
     fi
-
-  else
-    echo "Host 'master' is not defined in /etc/hosts"
-    write_log "Host 'master' is not defined in /etc/hosts"
   fi
 }
 
@@ -183,8 +181,6 @@ function add_master(){
   else
     echo "Master host $host_address already exits" >&2
     write_log "Master hosts $host_address already exits"
-    echo $output
-    write_log $output
   fi
 }
 
