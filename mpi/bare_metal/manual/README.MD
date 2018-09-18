@@ -1,4 +1,4 @@
-# Configuring a MPI Cluster Over a LAN
+# Configuring a MPI Cluster Over a LAN (Manual scripts)
 
 This folder contains configuration scripts to configure manually a LAN MPI Cluster of two machines. i.e., a single master and slave node.
 

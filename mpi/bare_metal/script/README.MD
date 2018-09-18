@@ -4,7 +4,7 @@ This folder contains configuration scripts to configure manually a LAN MPI Clust
 
 ## Requirements
 
-* Two run the configurations scripts both machines need to be turn on.
+* Two run the configurations scripts both machines need to be turned on.
 * The scripts must run as root user.
 
 ## Configuration Steps
@@ -15,32 +15,7 @@ The following configuration scripts have the following format: number.program_ma
 
 Setting up the ssh server in the Slave and Master nodes
 
-```sh
-sh 1.ssh_slave.sh <ip-master>
-```
-
-```sh
-sh 1.ssh_master.sh <ip-slave> <slave-number>
-```
-
-```sh
-sh 3.nfs_master.sh
-```
-
-```sh
-sh 4.nfs_slave.sh
-```
-
-Install OpenMPI 
-
-
-```sh
-sh 5.openmpi_slave_master.sh
-```
-
-## To do 
-
-- [ ] Allow the script to configure a single master machine with serveral slave nodes. **The clue can be in the 2.ssh_master.sh script**
+In construction ....
 
 ## References
 

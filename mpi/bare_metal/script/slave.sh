@@ -96,26 +96,42 @@ function setting_up_nfs(){
   # Creating the shared directory
   mkdir -p "/home/$MPI_USER/cloud"
 
-  echo "Mounting remote  master:/home/mpiuser/cloud"
-  write_log "Mounting remote  master:/home/mpiuser/cloud"
-
-	# Mounting the remote directory on behalf of mpi user
-	output = $(su -c "echo 'mpiuser' | sudo -S mount -t nfs master:/home/mpiuser/cloud /home/mpiuser/cloud" mpiuser)
-	
-  if [ -z $output ]
-  then
-    echo "/master:/home/mpiuser/cloud mounted"
-    write_log "/master:/home/mpiuser/cloud mounted"
-  else
-    echo "Error: Remote /master:/home/mpiuser/cloud folder could be mounted" >&2
-    write_log "Error: Remote /master:/home/mpiuser/cloud folder could be mounted"
-  fi
-
   echo "Persist master:/home/mpiuser/cloud mounted directory"
   write_log "Persist master:/home/mpiuser/cloud mounted directory"
-	# To mount the cloud remote folder every time the system starts
-	echo 'master:/home/mpiuser/cloud /home/mpiuser/cloud nfs' >> /etc/fstab
+  # To mount the cloud remote folder every time the system starts
+  echo 'master:/home/mpiuser/cloud /home/mpiuser/cloud nfs' >> /etc/fstab
 
+}
+
+
+function mount_master_shared_dir(){
+  echo "Mounting remote master:/home/mpiuser/cloud"
+  write_log "Mounting remote  master:/home/mpiuser/cloud"
+
+  echo "Checking if master host is already configured"
+  write_log "Checking if master host is already configured"
+
+  output = "$(grep master /etc/hosts)"
+
+  # If the host 'master' does not exits in /etc/hosts
+  # we add it.
+  if [ -n $output ]
+  then
+    echo "Host 'master' is not defined in /etc/hosts"
+    write_log "Host 'master' is not defined in /etc/hosts"
+  else
+    # Mounting the remote directory on behalf of mpi user
+    output = $(su -c "echo 'mpiuser' | sudo -S mount -t nfs master:/home/mpiuser/cloud /home/mpiuser/cloud" mpiuser)
+    
+    if [ -z $output ]
+    then
+      echo "/master:/home/mpiuser/cloud mounted"
+      write_log "/master:/home/mpiuser/cloud mounted"
+    else
+      echo "Error: Remote /master:/home/mpiuser/cloud folder could be mounted" >&2
+      write_log "Error: Remote /master:/home/mpiuser/cloud folder could be mounted"
+    fi
+  fi
 }
 
 
@@ -190,6 +206,12 @@ case $key in
     -add_master)
     HOST_IP="$2"
     add_master $HOST_IP
+    shift # past argument
+    shift # past value
+    ;;
+    -mount_master_dir)
+    # HOST_IP="$2"
+    mount_master_shared_dir
     shift # past argument
     shift # past value
     ;;
