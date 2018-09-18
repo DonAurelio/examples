@@ -163,7 +163,7 @@ function setting_up_nfs(){
 
   output=$(grep "/home/$MPI_USER/cloud" /etc/exports | wc -l)
 
-  if [ -z $output ]
+  if [ $output -eq 0 ]
   then
     echo "/home/$MPI_USER/cloud *(rw,sync,no_root_squash,no_subtree_check)" >> /etc/exports
     # Exporting shared directories
@@ -171,8 +171,8 @@ function setting_up_nfs(){
     echo "Folder /home/$MPI_USER/cloud exported"
     write_log "Folder /home/$MPI_USER/cloud exported"
   else
-    echo "Folder /home/$MPI_USER/cloud already was exported before" >&2
-    write_log "Folder /home/$MPI_USER/cloud already was exported before"
+    echo "Folder /home/$MPI_USER/cloud was previously expoerted" >&2
+    write_log "Folder /home/$MPI_USER/cloud was previously expoerted"
   fi
 
   # Restarting the NFS server
