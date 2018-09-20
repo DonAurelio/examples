@@ -80,16 +80,16 @@ function setting_up_ssh_keys(){
   write_log "=> Setting up private and public ssh keys"
 
   # Checking if the mpi ssh key already exists
-  if [ -f '/home/mpiuser/.ssh/mpi/id_rsa' ]
+  if [ -f '/home/mpiuser/.ssh/id_rsa' ]
   then
     echo "You already have an MPI ssh key"
     write_log "You already have an MPI ssh key"
   else
-    echo "Creating a folder '/home/mpiuser/.ssh/mpi/' to hold MPI SSH keys"
-    write_log "Creating a folder '/home/mpiuser/.ssh/mpi/' to hold MPI SSH keys"
+    echo "Creating a folder '/home/mpiuser/.ssh/' to hold MPI SSH keys"
+    write_log "Creating a folder '/home/mpiuser/.ssh/' to hold MPI SSH keys"
 
     # Creating a folder to hold MPI SSH keys
-    su -c "mkdir -p /home/mpiuser/.ssh/mpi/" ${MPI_USER}
+    su -c "mkdir -p /home/mpiuser/.ssh/" ${MPI_USER}
 
     echo "Creating the private and public ssh keys"
     write_log "Creating the private and public ssh keys"
@@ -97,11 +97,11 @@ function setting_up_ssh_keys(){
     # to run the following commands from 
     # root on behalf of mpiuser 
     # Creationg the public and private keys
-    su -c "ssh-keygen -t rsa -N '' -f /home/mpiuser/.ssh/mpi/id_rsa" ${MPI_USER}
+    su -c "ssh-keygen -t rsa -N '' -f /home/mpiuser/.ssh/id_rsa" ${MPI_USER}
     # Avoid checking if the remote host is reliable
     su -c "echo 'StrictHostKeyChecking=no' >> /home/mpiuser/.ssh/config" ${MPI_USER}
     # Sharing the public key with myself
-    su -c "sshpass -p '${MPI_USER}' ssh-copy-id -i /home/mpiuser/.ssh/mpi/id_rsa  localhost" ${MPI_USER}
+    su -c "sshpass -p '${MPI_USER}' ssh-copy-id -i /home/mpiuser/.ssh/id_rsa  localhost" ${MPI_USER}
 
   fi
   echo "Setting up private and public ssh keys finished succesfully"
@@ -224,12 +224,12 @@ function share_ssh_public_key(){
   local host_address=$1
 
   # Checking if the mpi ssh key already exists
-  if [ -f '/home/mpiuser/.ssh/mpi/id_rsa.pub' ]
+  if [ -f '/home/mpiuser/.ssh/id_rsa.pub' ]
   then
     echo "Sharing the public key with $host_address"
     write_log "Sharing the public key with $host_address"
     # Sharing the public key with the remote slave
-    su -c "sshpass -p '$MPI_USER' ssh-copy-id -i ~/.ssh/mpi/id_rsa $MPI_USER@$host_address" ${MPI_USER}
+    su -c "sshpass -p '$MPI_USER' ssh-copy-id -i ~/.ssh/id_rsa $MPI_USER@$host_address" ${MPI_USER}
   else
     echo "You dont have ssh keys to share" >&2
     write_log "You dont have ssh keys to share"
