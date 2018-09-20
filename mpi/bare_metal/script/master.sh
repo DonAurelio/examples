@@ -89,7 +89,7 @@ function setting_up_ssh_keys(){
     write_log "Creating a folder '/home/mpiuser/.ssh/mpi/' to hold MPI SSH keys"
 
     # Creating a folder to hold MPI SSH keys
-    mkdir -p /home/mpiuser/.ssh/mpi/
+    su -c "mkdir -p /home/mpiuser/.ssh/mpi/" ${MPI_USER}
 
     echo "Creating the private and public ssh keys"
     write_log "Creating the private and public ssh keys"
