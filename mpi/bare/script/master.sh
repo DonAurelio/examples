@@ -224,7 +224,7 @@ function share_ssh_public_key(){
   local host_address=$2
 
   # Checking if the mpi ssh key already exists
-  if [ -f '~/.ssh/mpi/id_rsa' ]
+  if [ -f 'home/mpiuser/.ssh/mpi/id_rsa' ]
   then
     echo "Sharing the public key with $host_address"
     write_log "Sharing the public key with $host_address"
