@@ -121,6 +121,8 @@ function mount_master_shared_dir(){
     write_log "Host 'master' is not defined in /etc/hosts"
   else
     # Mounting the remote directory on behalf of mpi user
+    echo "If the script stops in that step it is possible that the marter is not reachable"
+    echo "Please check the master can be reachad from this host"
     output=$(su -c "echo 'mpiuser' | sudo -S mount -t nfs master:/home/mpiuser/cloud /home/mpiuser/cloud" mpiuser)
     
     if [ -z $output ]

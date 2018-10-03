@@ -1,2 +1,4 @@
-head
-node
+# This is a host file, palce here the name of the nodes
+# that will run the parallel job
+
+localhost
