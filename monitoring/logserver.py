@@ -12,6 +12,7 @@ This Flag application serves the logs generated on this computer throught API en
 # the FLASK_APP environment variable:
 # export FLASK_APP=${PWD}/logserver.py
 # flask run --host=0.0.0.0:5000
+# flask run -h 0.0.0.0 -p 5000
 # * Running on http://127.0.0.1:5000/
 
 from flask import Flask

@@ -29,13 +29,11 @@ def collect():
 def get_server_log(ip_address_port,endpoint):
     url = 'http://{}{}'.format(ip_address_port,endpoint)
     response = requests.get(url)
-    print(response.text)
     return response.text
 
 def remove_server_log(ip_address_port,endpoint):
     url = 'http://{}{}'.format(ip_address_port,endpoint)
     response = requests.post(url)
-    print(response.text)
     return response.text
 
 def collect_servers_logs(servers,endpoint,outfile_suffix='.txt'):
