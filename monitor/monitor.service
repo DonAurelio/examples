@@ -1,0 +1,14 @@
+[Unit]
+Description=Tests Logs Server
+
+[Service]
+Environment=FLASK_APP=/home/cubo/monitor/logserver.py
+User=cubo
+Group=cubo
+WorkingDirectory=/home/cubo/monitor
+ExecStart=/home/cubo/anaconda2/bin/flask run -h 0.0.0.0 -p 5000
+Restart=on-failure
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
