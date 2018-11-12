@@ -18,17 +18,16 @@
 # Delete the line that contains your cron job
 # Hit ESC > :w > :q
 
-
 DATE=$(date '+%Y-%m-%d %H:%M:%S')
 
 # CPU METRICTS
 
 # Avrrage percentage of CPU utilization
-CPU_USAGE=$(top -n 1 | awk 'NR==3{printf "%s", $2}')
+CPU_USAGE=$(top -bn 1 | awk 'NR==3{printf "%s", $2}')
 
 # iowait: Percentage of time that the CPU or CPUs were idle during which the system had an outstanding disk I/O request.
 # https://haydenjames.io/linux-server-performance-disk-io-slowing-application/
-CPU_IOWAIT=$(top -n 1 | awk 'NR==3{printf "%s", $10}')
+CPU_IOWAIT=$(top -bn 1 | awk 'NR==3{printf "%s", $10}')
 
 # RAM memory percentage total memory / used 
 CPU_MEMORY_USAGE=$(free -m | awk 'NR==2{printf "%.2f", $3*100/$2 }')
