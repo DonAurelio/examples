@@ -15,16 +15,22 @@ The following configuration scripts have the following format: <machine>.sh. i.e
 
 Setting up the Master and Slave nodes
 
-1. Configure the Master Node: the configuration create an mpiuser, setting up ssh, ssh keys, nfs and mpi.
+1. Configure the Master and Slave nodes: the configuration create an mpiuser, setting up ssh, ssh keys, nfs and mpi.
 
 ```sh
 ./master.sh -config
 ```
 
+Run this on slave nodes
+
+```sh
+./slave.sh -config
+```
+
 2. Configure the Slave Node: create an mpiuser, setting up ssh, mpi, add the Master Node Address to /etc/hosts, and mount the master remove /home/mpi/cloud shared network directory.
 
 ```sh
-./slave.sh -config -set_master_node master_ip -mount_master_dir
+./slave.sh -set_master_node master_ip -mount_master_dir
 ```
 
 3. Add configured Slave Nodes to the Master
