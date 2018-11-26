@@ -231,8 +231,8 @@ function share_ssh_public_key(){
     # Sharing the public key with the remote slave
     su -c "sshpass -p '$MPI_USER' ssh-copy-id -i ~/.ssh/id_rsa $MPI_USER@$host_address" ${MPI_USER}
   else
-    echo "You dont have ssh keys to share" >&2
-    write_log "You dont have ssh keys to share"
+    echo "You dont have ssh keys to share, please use -set_ssh_keys first." >&2
+    write_log "You dont have ssh keys to share, please use -set_ssh_keys first."
   fi
 }
 
@@ -251,6 +251,11 @@ case $key in
     setting_up_ssh_keys
     setting_up_nfs
     setting_up_mpi
+    shift # past argument
+    # shift # past value
+    ;;
+    -set_ssh_keys)
+    setting_up_ssh_keys
     shift # past argument
     # shift # past value
     ;;
