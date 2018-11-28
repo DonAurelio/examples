@@ -1,0 +1,50 @@
+# A Bootstrap that use the Docker Container Library
+Bootstrap: docker
+# Contatiner image
+From: ubuntu:16.04
+
+# Store metadata with your containers add labels section
+%labels
+Maintainer aa.vivas@uniandes.edu.co
+Version 1.0
+
+# Use it to install container dependencies. You cannot copy files 
+# from the host to your container in this section, but you can of 
+# course download with commands like git clone and wget and curl.
+%post
+    # Here we are at the base, /, of the container
+
+    # fortune and cowsay
+    # fortune: This prints out a random interesting proverb.
+    # cowsay: This utility displays a speaking cow in terminal window.
+    apt-get -y update
+    apt-get -y install fortune cowsay lolcat
+
+# Place environmet variables he
+# %environment
+    # Variables needed for fortune, lolcow and lolcat
+    export LC_ALL=C
+    export PATH=/usr/games:$PATH
+
+# The %runscript is another scriptlet, but it does not get executed during bootstrapping. 
+# Instead it gets persisted within the container to a file called /singularity which is 
+# the execution driver when the container image is run (either via the singularity run 
+# command or via executing the container directly).
+
+# When the %runscript is executed, all options are passed along to the executing script 
+# at runtime, this means that you can (and should) manage argument processing from within 
+# your runscript. Here is an example of how to do that.
+%runscript
+    echo "Arguments received: $*"
+    echo "Pass this to your command $@"
+
+    # Displays a lolcow message
+    /usr/games/fortune | /usr/games/cowsay | /usr/games/lolcat
+
+# You may choose to add a %test section to your definition file. This section will be run at 
+# the very end of the boostrapping process and will give you a chance to validate the container 
+# during the bootstrap process. You can also execute this scriptlet through the container itself,
+# such that you can always test the validity of the container itself as you transport it to different hosts.
+# Extending on the above Open MPI %post, consider this example:
+#%test
+#   echo "The test section was executed"
