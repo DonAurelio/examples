@@ -1,16 +1,13 @@
 #! /bin/bash
 
-# REFERENCES:
-# https://nvidia.custhelp.com/app/answers/detail/a_id/3751/~/useful-nvidia-smi-queries
-# http://www.systeen.com/2016/05/07/bash-script-monitor-cpu-memory-disk-usage-linux/
-# https://linux.die.net/man/1/iostat
+# Autor: Aurelio Vivas <aa.vivas@uniandes.edu.co>
 
 # HOW TO RUN THIS SCRIPT
 # ./monitor.sh
 
 # USE THIS SCRIPT AS A CRONJOB
 # crontab -e 
-# */1 * * * * /home/<your-user>/monitor/monitor.sh >> /home/<your-user>/monitor/out.log 2>> /home/<your-user>/monitor/err.log
+# */1 * * * * /home/<your-user>/monitor/monitor.sh -cpu -memory -disk <disk_name> -network <device_name> [-gpu] >> /home/<your-user>/monitor/out.log 2>> /home/<your-user>/monitor/err.log
 # To list existing cron jobs:
 # crontab –l
 # To remove an existing cron job:
@@ -25,7 +22,7 @@ function cpu_metrics(){
     CPU_USAGE=$(mpstat 1 1 | grep Average | awk 'NR==1{printf "%s",$3}')
     CPU_COUNT=$(nproc --all)
     
-    METRICS=$METRICS,$CPU_USAGE,$CPU_COUNT
+    METRICS="$METRICS;$CPU_USAGE;$CPU_COUNT"
 }
 
 function memory_metrics(){
@@ -33,7 +30,7 @@ function memory_metrics(){
     MEM_TOTAL=$(free -m -t | grep Total | awk 'NR==1{printf "%s",$2}')
     MEM_USED=$(free -m -t | grep Total | awk 'NR==1{printf "%s",$3}')
     
-    METRICS="$METRICS,$MEM_TOTAL,$MEM_USED"
+    METRICS="$METRICS;$MEM_TOTAL;$MEM_USED"
 }
 
 function disk_metrics(){
@@ -46,7 +43,7 @@ function disk_metrics(){
     # Device saturation occurs when this value is close to 100%.
     DISK_USAGE=$(iostat -x -d ${disk_device_name} 1 2 | grep ${disk_device_name} | awk 'NR==2{printf "%s",$16}')
     
-    METRICS="$METRICS,$DISK_READS,$DISK_WRITES,$DISK_USAGE"
+    METRICS="$METRICS;$DISK_READS;$DISK_WRITES;$DISK_USAGE"
 }
 
 function network_metrics(){
@@ -56,7 +53,7 @@ function network_metrics(){
     #  Kilobytes/second written (transmitted).
     NET_WRITES=$(nicstat -i ${network_device_name} -s 1 2 | awk 'NR==3{printf "%s",$4}')
 
-    METRICS="$METRICS,$NET_READS,$NET_WRITES"
+    METRICS="$METRICS;$NET_READS;$NET_WRITES"
 }
 
 function gpu_metrics(){
@@ -85,7 +82,7 @@ function gpu_metrics(){
     # -memory.free: Total free memory.
     # GPU_MEMORY_FREE=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | awk 'NR=1{printf "%s\t",$1}')
 
-    METRICS="$METRICS,$GPU_USAGE,$GPU_MEMORY_TOTAL,$GPU_MEMORY_USED,$GPU_PST,$GPU_TEMP"
+    METRICS="$METRICS;$GPU_USAGE;$GPU_MEMORY_TOTAL;$GPU_MEMORY_USED;$GPU_PST;$GPU_TEMP"
 }
 
 
@@ -132,3 +129,5 @@ case $key in
 esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
+
+echo $METRICS
