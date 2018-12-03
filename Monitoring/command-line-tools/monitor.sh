@@ -98,31 +98,29 @@ key="$1"
 
 case $key in
     -cpu)
-    # COMMAND HERE ....
+    cpu_metrics
     shift # past argument
     # shift # past value
     ;;
     -gpu)
-    # COMMAND HERE ....
+    gpu_metrics
     shift # past argument
     # shift # past value
     ;;
     -memory)
-    # COMMAND HERE ....
+    memory_metrics
     shift # past argument
     # shift # past value
     ;;
     -disk)
     disk_name="$2"
-    # add_master $HOST_IP
-    # COMMAND HERE ....
+    disk_metrics $disk_name    
     shift # past argument
     shift # past value
     ;;
     -network)
     nic_name="$2"
-    # add_master $HOST_IP
-    # COMMAND HERE ....
+    network_metrics $nic_name
     shift # past argument
     shift # past value
     ;;
