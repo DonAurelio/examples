@@ -6,6 +6,7 @@ LABEL maintaainer="Aurelio Vivas <aa.vivas@uniandes.edu.co>"
 RUN apt-get update
 
 RUN apt-get install -y \
+	nano \
 	# To access ifconfig
 	net-tools \
 	# Optional packages
