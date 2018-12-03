@@ -106,6 +106,11 @@ The first report nicstat display an stadistic since the system was up (first two
 10:20:24   wlp2s0          0.000          0.000
 ```
 
+We can be interested in:
+
+* **rkB/s** - *Kilobytes/second read (received).*
+* **wkB/s** - *Kilobytes/second written (transmitted).*
+
 ## NVIDA GPU Activity
 
 A complete guide about the commands you can use to measure GPU performance using nvidia-smi can be found [here](https://nvidia.custhelp.com/app/answers/detail/a_id/3751/~/useful-nvidia-smi-queries).
