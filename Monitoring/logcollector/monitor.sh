@@ -10,7 +10,7 @@
 
 # USE THIS SCRIPT AS A CRONJOB
 # crontab -e 
-# */1 * * * * /home/mpiuser/monitor/monitor.sh >> /home/mpiuser/monitor/out.log 2>> /home/mpiuser/monitor/err.log
+# */1 * * * * /home/<your-user>/monitor/monitor.sh >> /home/<your-user>/monitor/out.log 2>> /home/<your-user>/monitor/err.log
 # To list existing cron jobs:
 # crontab –l
 # To remove an existing cron job:
