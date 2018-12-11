@@ -215,10 +215,10 @@ case $key in
     shift # past value
     ;;
     -mount_master_dir)
-    # HOST_IP="$2"
-    mount_master_shared_dir
+    NFS_DIR=${2}
+    mount_master_shared_dir $NFS_DIR
     shift # past argument
-    # shift # past value
+    shift # past value
     ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later

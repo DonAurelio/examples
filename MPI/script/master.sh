@@ -157,24 +157,26 @@ function setting_up_nfs(){
   # Install the nfs server package
   apt-get $APT_GET_FLAGS install nfs-kernel-server
 
-  echo "Creating NFS shared directory /home/$MPI_USER/cloud"
+  local nfs_dir="/home/$MPI_USER/${1}"
+
+  echo "Creating NFS shared directory ${nfs_dir}"
   # Creating the shared directory
-  mkdir -p "/home/$MPI_USER/cloud"
+  mkdir -p "${nfs_dir}"
   # Indicating the directory that will be shared
   # sed -e '/home/mpiuser/cloud *(rw,sync,no_root_squash,no_subtree_check)' -ibak /etc/exports
 
-  output=$(grep "/home/$MPI_USER/cloud" /etc/exports | wc -l)
+  output=$(grep "${nfs_dir}" /etc/exports | wc -l)
 
   if [ $output -eq 0 ]
   then
-    echo "/home/$MPI_USER/cloud *(rw,sync,no_root_squash,no_subtree_check)" >> /etc/exports
+    echo "${nfs_dir} *(rw,sync,no_root_squash,no_subtree_check)" >> /etc/exports
     # Exporting shared directories
     exportfs -a
-    echo "Folder /home/$MPI_USER/cloud exported"
-    write_log "Folder /home/$MPI_USER/cloud exported"
+    echo "Folder ${nfs_dir} exported"
+    write_log "Folder ${nfs_dir} exported"
   else
-    echo "Folder /home/$MPI_USER/cloud was previously expoerted" >&2
-    write_log "Folder /home/$MPI_USER/cloud was previously expoerted"
+    echo "Folder ${nfs_dir} was previously expoerted" >&2
+    write_log "Folder ${nfs_dir} was previously expoerted"
   fi
 
   # Restarting the NFS server
@@ -249,10 +251,16 @@ case $key in
     create_mpi_user
     setting_up_ssh
     setting_up_ssh_keys
-    setting_up_nfs
+    setting_up_nfs cloud
     setting_up_mpi
     shift # past argument
     # shift # past value
+    ;;
+    -set_nfs)
+    NFS_DIR="$2"
+    setting_up_nfs $NFS_DIR
+    shift # past argument
+    shift # past value
     ;;
     -set_ssh_keys)
     setting_up_ssh_keys
