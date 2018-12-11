@@ -192,7 +192,6 @@ function setting_up_nfs(){
   fi
 }
 
-
 # Add a Slave in the /etc/hosts file
 function add_host(){
   echo "=> Adding a new host to /etc/hosts"
@@ -238,6 +237,29 @@ function share_ssh_public_key(){
   fi
 }
 
+function unset_nfs(){
+  echo "=> Deleting NFS Exports"
+  write_log "=> Deleting NFS Exports"
+  # Delete lines that contain a pattern
+  sed '/mpiuser/d' /etc/exports
+
+  echo "=> Deleting NFS Exports"
+  exports -a
+}
+
+function unset_ssh_keys(){
+  echo "=> Deleting SSH keys"
+  write_log "=> Deleting SSH keys"
+  rm -rf /home/mpiuser/.ssh
+}
+
+function unset_etc_hosts(){
+  echo "=> Deleting slave nodes from /etc/hosts"
+  write_log "=> Deleting slave nodes from /etc/hosts"
+  # Delete lines that contain a pattern
+  sed '/slave/d' /etc/hosts
+}
+
 
 # Parsing argumnets
 POSITIONAL=''
@@ -256,6 +278,13 @@ case $key in
     setting_up_mpi
     shift # past argument
     shift # past value
+    ;;
+    -unset)
+    unset_nfs
+    unset_ssh_keys
+    unset_etc_hosts
+    shift # past argument
+    # shift # past value
     ;;
     -add_slave)
     HOST_IP="$2"

@@ -106,7 +106,6 @@ function setting_up_nfs(){
 
 }
 
-
 function mount_master_shared_dir(){
   echo "=> Mounting remote master:/home/mpiuser/cloud"
   write_log "=> Mounting remote  master:/home/mpiuser/cloud"
@@ -194,24 +193,27 @@ function add_master(){
     write_log "Master hosts $host_address already exits"
   fi
 
-
-  host_number="$(grep master_ /etc/hosts | wc -l)"
-  output="$(grep $host_address /etc/hosts | wc -l)"
-
-  # If the host_address does not exits in /etc/hosts
-  # we add it.
-  if [ $output -eq 0 ]
-  then
-    echo "Adding the ${host_address} IP address with host name slave_$host_number to /etc/hosts on master"
-    echo -e "$host_address\tslave_$host_number" >> /etc/hosts
-    echo "Host added succesfully"
-    write_log "Host added succesfully"
-  else
-    echo "The hosts $host_address already exits" >&2
-    write_log "The hosts $host_address already exits"
-  fi
 }
 
+function unset_nfs(){
+  echo "=> Deleting NFS Mounts"
+  write_log "=> Deleting NFS Mounts"
+  # Delete lines that contain a pattern
+  sed '/mpiuser/d' /etc/fstab
+}
+
+function unset_ssh_keys(){
+  echo "=> Deleting SSH keys"
+  write_log "=> Deleting SSH keys"
+  rm -rf /home/mpiuser/.ssh
+}
+
+function unset_etc_hosts(){
+  echo "=> Deleting master from /etc/hosts"
+  write_log "=> Deleting master from /etc/hosts"
+  # Delete lines that contain a pattern
+  sed '/master/d' /etc/hosts
+}
 
 # Parsing argumnets
 POSITIONAL=''
@@ -238,6 +240,13 @@ case $key in
     shift # past argument
     shift # past value
     shift # past value
+    ;;
+    -unset)
+    unset_nfs
+    unset_ssh_keys
+    unset_etc_hosts
+    shift # past argument
+    # shift # past value
     ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later
