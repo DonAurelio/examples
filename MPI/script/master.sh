@@ -247,25 +247,15 @@ key="$1"
 
 case $key in
     -config)
+    NFS_DIR="$2"
     write_log $(date '+%Y-%m-%d %H:%M:%S')
     create_mpi_user
     setting_up_ssh
     setting_up_ssh_keys
-    setting_up_nfs cloud
+    setting_up_nfs $NFS_DIR
     setting_up_mpi
     shift # past argument
-    # shift # past value
-    ;;
-    -set_nfs)
-    NFS_DIR="$2"
-    setting_up_nfs $NFS_DIR
-    shift # past argument
     shift # past value
-    ;;
-    -set_ssh_keys)
-    setting_up_ssh_keys
-    shift # past argument
-    # shift # past value
     ;;
     -add_slave)
     HOST_IP="$2"
@@ -273,6 +263,11 @@ case $key in
     share_ssh_public_key $HOST_IP
     shift # past argument
     shift # past value
+    ;;
+    -set_ssh_keys)
+    setting_up_ssh_keys
+    shift # past argument
+    # shift # past value
     ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later

@@ -75,6 +75,9 @@ function setting_up_nfs(){
   echo "=> Setting NFS Server"
   write_log "=> Setting NFS Server"
 
+  master_name=${1}
+  nfs_dir=${2}
+
   apt-get $APT_GET_FLAGS update
 
   if [ $? -eq 0 ]
@@ -91,15 +94,15 @@ function setting_up_nfs(){
   # Install the nfs server package
   apt-get $APT_GET_FLAGS install nfs-common
 
-  echo "Creating NFS shared directory /home/$MPI_USER/cloud"
-  write_log "Creating NFS shared directory /home/$MPI_USER/cloud"
+  echo "Creating NFS shared directory /home/$MPI_USER/$nfs_dir"
+  write_log "Creating NFS shared directory /home/$MPI_USER/$nfs_dir"
   # Creating the shared directory
-  mkdir -p "/home/$MPI_USER/cloud"
+  mkdir -p "/home/$MPI_USER/$nfs_dir"
 
-  echo "Persist master:/home/mpiuser/cloud mounted directory"
-  write_log "Persist master:/home/mpiuser/cloud mounted directory"
+  echo "Persist $master_name:/home/mpiuser/$nfs_dir mounted directory"
+  write_log "Persist $master_name:/home/mpiuser/$nfs_dir mounted directory"
   # To mount the cloud remote folder every time the system starts
-  echo 'master:/home/mpiuser/cloud /home/mpiuser/cloud nfs' >> /etc/fstab
+  echo "$master_name:/home/mpiuser/$nfs_dir /home/mpiuser/$nfs_dir nfs" >> /etc/fstab
 
 }
 
@@ -174,6 +177,7 @@ function add_master(){
 
   local host_address=${1}
 
+  host_number="$(grep master_ /etc/hosts | wc -l)"
   output="$(grep $host_address /etc/hosts | wc -l)"
 
   # If the host_address exits in /etc/hosts
@@ -182,12 +186,29 @@ function add_master(){
   then
     echo "Adding the master host $host_address to /etc/hosts on master"
     write_log "Adding the master host $host_address to /etc/hosts on master"
-    echo -e "$host_address\tmaster" >> /etc/hosts
-    echo "Master host $host_address added succesfully"
+    echo -e "$host_address\tmaster_$host_number" >> /etc/hosts
+    echo "Master host master_$host_numbe added succesfully"
     write_log "Master host $host_address added succesfully"
   else
-    echo "Master host $host_address already exits" >&2
+    echo "Master host master_$host_numbe already exits" >&2
     write_log "Master hosts $host_address already exits"
+  fi
+
+
+  host_number="$(grep master_ /etc/hosts | wc -l)"
+  output="$(grep $host_address /etc/hosts | wc -l)"
+
+  # If the host_address does not exits in /etc/hosts
+  # we add it.
+  if [ $output -eq 0 ]
+  then
+    echo "Adding the ${host_address} IP address with host name slave_$host_number to /etc/hosts on master"
+    echo -e "$host_address\tslave_$host_number" >> /etc/hosts
+    echo "Host added succesfully"
+    write_log "Host added succesfully"
+  else
+    echo "The hosts $host_address already exits" >&2
+    write_log "The hosts $host_address already exits"
   fi
 }
 
@@ -199,25 +220,23 @@ do
 key="$1"
 
 case $key in
-    -config)
-    write_log $(date '+%Y-%m-%d %H:%M:%S')
-    create_mpi_user
-    setting_up_ssh
-    setting_up_nfs
-    setting_up_mpi
-    shift # past argument
-    # shift # past value
-    ;;
     -set_master_node)
     HOST_IP="$2"
     add_master $HOST_IP
     shift # past argument
     shift # past value
     ;;
-    -mount_master_dir)
-    NFS_DIR=${2}
+    -config)
+    MASTER_NAME="$2"
+    NFS_DIR="$3"
+    write_log $(date '+%Y-%m-%d %H:%M:%S')
+    create_mpi_user
+    setting_up_ssh
+    setting_up_nfs $MASTER_NAME $NFS_DIR
     mount_master_shared_dir $NFS_DIR
+    setting_up_mpi
     shift # past argument
+    shift # past value
     shift # past value
     ;;
     *)    # unknown option
