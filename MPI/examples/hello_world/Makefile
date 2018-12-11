@@ -17,6 +17,7 @@ HOST_FILE = host_file
 
 # mpirun flags
 MPIRUN_FLAGS = -v --allow-run-as-root
+MPIRUN_FLAGS= --mca btl_tcp_if_include eno1  -np 16 --hostfile host_file
 # MPIRUN_FLAGS = -v --allow-run-as-root --mca btl ^openib
 
 all: run_single_host
@@ -25,10 +26,10 @@ compile:
 	${COMPILER} -o ${TARGET} ${TARGET}${EXT}
 
 single_host: compile
-	mpirun ${MPIRUN_FLAGS} -np ${N} ./${TARGET}
+	mpirun ${MPIRUN_FLAGS} ./${TARGET}
 
 multi_host: compile
-	mpirun ${MPIRUN_FLAGS} -npernode ${NP} --hostfile ${HOST_FILE} ./${TARGET}
+	mpirun ${MPIRUN_FLAGS} ./${TARGET}
 
 clean:
 	rm -f ${TARGET}
