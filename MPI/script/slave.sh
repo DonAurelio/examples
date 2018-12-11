@@ -199,7 +199,7 @@ function unset_nfs(){
   echo "=> Deleting NFS Mounts"
   write_log "=> Deleting NFS Mounts"
   # Delete lines that contain a pattern
-  sed '/mpiuser/d' /etc/fstab > /etc/fstab
+  sed --in-place=.old '/mpiuser/d' /etc/fstab
 }
 
 function unset_ssh_keys(){
@@ -212,7 +212,7 @@ function unset_etc_hosts(){
   echo "=> Deleting master from /etc/hosts"
   write_log "=> Deleting master from /etc/hosts"
   # Delete lines that contain a pattern
-  sed '/master/d' /etc/hosts > /etc/hosts
+  sed --in-place=.old '/master/d' /etc/hosts
 }
 
 # Parsing argumnets

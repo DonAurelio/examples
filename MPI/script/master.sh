@@ -241,7 +241,7 @@ function unset_nfs(){
   echo "=> Deleting NFS Exports"
   write_log "=> Deleting NFS Exports"
   # Delete lines that contain a pattern
-  sed '/mpiuser/d' /etc/exports > /etc/exports
+  sed --in-place=.old '/mpiuser/d' /etc/exports
 
   echo "=> Deleting NFS Exports"
   exportfs -a
@@ -257,7 +257,7 @@ function unset_etc_hosts(){
   echo "=> Deleting slave nodes from /etc/hosts"
   write_log "=> Deleting slave nodes from /etc/hosts"
   # Delete lines that contain a pattern
-  sed '/slave/d' /etc/hosts > /etc/hosts
+  sed --in-place=.old '/slave/d' /etc/hosts
 }
 
 
