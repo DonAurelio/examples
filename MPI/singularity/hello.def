@@ -5,8 +5,8 @@ From: ubuntu:16.04
 
 # Store metadata with your containers add labels section
 %labels
-Maintainer aa.vivas@uniandes.edu.co
-Version 1.0
+    Maintainer aa.vivas@uniandes.edu.co
+    Version 1.0
 
 # Use it to install container dependencies. You cannot copy files 
 # from the host to your container in this section, but you can of 
@@ -20,9 +20,9 @@ Version 1.0
     apt-get -y update
     apt-get -y install fortune cowsay lolcat
 
-# Place environmet variables he
-# %environment
-    # Variables needed for fortune, lolcow and lolcat
+# Place contaner environmet variables here
+%environment
+    # Something funny
     export LC_ALL=C
     export PATH=/usr/games:$PATH
 
@@ -36,10 +36,10 @@ Version 1.0
 # your runscript. Here is an example of how to do that.
 %runscript
     echo "Arguments received: $*"
-    echo "Pass this to your command $@"
+    echo "This '$@' is passed to your command when the binary is executed"
 
     # Displays a lolcow message
-    /usr/games/fortune | /usr/games/cowsay | /usr/games/lolcat
+    fortune | cowsay | lolcat
 
 # You may choose to add a %test section to your definition file. This section will be run at 
 # the very end of the boostrapping process and will give you a chance to validate the container 
