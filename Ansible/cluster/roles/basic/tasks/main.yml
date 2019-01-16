@@ -1,0 +1,33 @@
+---
+- name: update ubuntu
+  apt: update_cache=yes
+
+- name: install openssh-server
+  apt: name=openssh-server state=present
+
+- name: start ssh server
+  shell: service ssh start
+
+- name: diable known host checking in SSH
+  lineinfile: >
+    dest=/etc/ssh/ssh_config
+    line="StrictHostKeyChecking no" 
+    insertafter='EOF' 
+    state=present
+
+- name: install build-essential
+  apt: name=build-essential state=present
+
+- name: create temp directory
+  file: path={{ MPI_TEMP_DIR }} state=directory mode=0755
+
+- name: create install directory
+  file: path={{ MPI_INST_DIR }} state=directory
+
+- name: untar OpenMPI
+  unarchive:
+    src: https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.gz
+    dest: "{{ MPI_TEMP_DIR }}"
+    copy: no
+
+- name: running ./configure (this can take a few seconds) ...
