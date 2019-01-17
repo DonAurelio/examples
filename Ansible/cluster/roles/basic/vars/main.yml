@@ -1,0 +1,9 @@
+mpi_temp_dir: /tmp/openmpi
+mpi_inst_dir: /opt/openmpi-3.1.2
+mpi_test_dir: /tmp/openmpi-test
+mpi_user_name: mpiuser
+mpi_user_pass: $6$1OaVpN1aOGw2gSU$fHL42457lwDQzy5.0ivUD4fCGc7gJOnQyR8QWWoIbk3LqxIk0GRRRtIHN1MesVHFVHju7DOoj0qrbfOdWg13o1
+mpi_hosts:
+  - { name: master, ip: 10.0.0.2 }
+  - { name: slave_1, ip: 10.0.0.3 }
+  - { name: slave_2, ip: 10.0.0.4 }

@@ -1,0 +1,2 @@
+nfs_exports:
+  - /home/mpiuser/cloud *(rw,sync,no_root_squash,no_subtree_check)

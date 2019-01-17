@@ -1,15 +1,8 @@
-- name: Install NFS utilities
-  apt:
-    name:
-      - nfs-common
-      - nfs-kernel-server 
-    state: present
-
-- name: Export directories
+- name: Creating nfs export directories
   file: 'path="{{ item.strip().split()[0] }}" state=directory'
   with_items: "{{ nfs_exports }}"
 
-- name: Copy exports file.
+- name: Creating /etc/exports file.
   template:
     src: exports.j2
     dest: /etc/exports
@@ -21,6 +14,33 @@
   # in the handlers folder
   notify: reload_nfs
 
-- name: Ensure nfs is running.
+- name: Start nfs service.
   service: "name=nfs-kernel-server state=started enabled=yes"
   when: "{{ nfs_exports|length }}"
+
+- name: Check if .ssh dir exist
+  stat: path="/home/{{ mpi_user_name }}/.ssh"
+  register: ssh_directory_exists
+
+- name: Removing .ssh dir if exists
+  file: path="/home/{{ mpi_user_name }}/.ssh" state=absent
+  when: ssh_directory_exists.stat.exists == true
+
+- name: Creating .ssh folder
+  become_user: "{{ mpi_user_name }}"
+  file: 
+    path: "/home/{{ mpi_user_name }}/.ssh" 
+    state: directory
+    mode: 0700
+
+# Todo: set the behabior when the key exist dir exist
+- name: Generating ssh keys
+  shell: ssh-keygen -t rsa -N '' -f /home/{{ mpi_user_name }}/.ssh/id_rsa
+  become: yes
+  become_user: "{{ mpi_user_name }}"
+
+- name: Distribute ssh public-key
+  shell: sshpass -p '{{ mpi_user_pass | password_hash('sha512') }}' ssh-copy-id -i /home/{{ mpi_user_name }}/.ssh/id_rsa {{ mpi_user_name }}@{{ item.name }}
+  become: yes
+  become_user: "{{ mpi_user_name }}"
+  with_items: "{{ mpi_hosts }}"

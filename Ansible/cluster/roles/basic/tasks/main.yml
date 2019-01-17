@@ -2,11 +2,14 @@
 - name: Update ubuntu
   apt: update_cache=yes
 
-- name: Install openssh-server
-  apt: name=openssh-server state=present
-
-- name: Restart SSH
-  service: name=ssh state=restarted
+- name: Install required packages
+  apt: name={{ item }} state=present
+  with_items:
+    - build-essential
+    - openssh-server
+    - sshpass
+    - nfs-common
+    - nfs-kernel-server 
 
 - name: Diable known host checking in SSH
   lineinfile: >
@@ -14,39 +17,43 @@
     line="StrictHostKeyChecking no" 
     insertafter='EOF' 
     state=present
+  tags:
+    - ssh
 
-- name: Install build-essential
-  apt: name=build-essential state=present
+- name: Start SSH service
+  service: name=ssh state=restarted
+  tags:
+    - ssh
 
-- name: Create temp directory
+- name: Create MPI temp directory
   file: path={{ mpi_temp_dir }} state=directory mode=0755
 
-- name: Create install directory
+- name: Create MPI install directory
   file: path={{ mpi_inst_dir }} state=directory
 
-- name: Untar OpenMPI
+- name: Untar MPI
   unarchive:
     src: https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.gz
     dest: "{{ mpi_temp_dir }}"
     copy: no
 
-- name: Running ./configure (this can take a few seconds) ...
+- name: Running MPI ./configure (this can take a few seconds) ...
   command: ./configure --prefix='{{ mpi_inst_dir }}'
   # args to the command module 
   args:
     chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
-- name: Make OpenMPI
+- name: Make MPI
   command: make
   args:
     chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
-- name: Make install OpenMPI
+- name: Make install MPI
   command: make install
   args:
     chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
-- name: Create symbolic links
+- name: Create MPI sym links
   file:
     src: "{{ mpi_inst_dir }}/bin/{{ item }}"
     dest: /usr/local/bin/{{ item }}
@@ -62,7 +69,7 @@
       - mpifort
       - mpirun
 
-- name: Create mpi test directory
+- name: Create MPI test directory
   file: path="{{ mpi_test_dir }}" state=directory mode=0755
 
 - name: Download hello world example
@@ -81,14 +88,25 @@
 - debug: msg="Hello world success!"
   when: "'Hello, World, I am 0 of 1' in world.stdout_lines"
 
-- name: Create a mpi user to run mpi applications
-   user:
-    name: mpiuser
-    password: 'o7dJI37WlZWuE'
+- name: Create a MPI user to run mpi applications
+  user:
+    name: "{{ mpi_user_name }}"
+    password: "{{ mpi_user_pass }}"
     groups:
      - sudo
     state: present
     shell: /bin/bash       
     system: no             
     createhome: yes        
-    home: /home/mpiuser  
+    home: /home/{{ mpi_user_name }}
+
+  tags:
+    - user
+
+- name: Create /etc/hosts directory
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
