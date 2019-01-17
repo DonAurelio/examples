@@ -1,0 +1,26 @@
+- name: Install NFS utilities
+  apt:
+    name:
+      - nfs-common
+      - nfs-kernel-server 
+    state: present
+
+- name: Export directories
+  file: 'path="{{ item.strip().split()[0] }}" state=directory'
+  with_items: "{{ nfs_exports }}"
+
+- name: Copy exports file.
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
+  # The notification event will be sended to 
+  # the handler with the corresponding name 
+  # in the handlers folder
+  notify: reload_nfs
+
+- name: Ensure nfs is running.
+  service: "name=nfs-kernel-server state=started enabled=yes"
+  when: "{{ nfs_exports|length }}"

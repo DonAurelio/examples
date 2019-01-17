@@ -1,12 +1,15 @@
 ---
   # Target group of hosts
-- hosts: master
+- name: Setting up openmpi cluster
+  hosts: master
   # Become super user to run the commands
   user: vagrant
   become: true
   roles:
     - basic
   vars:
-    MPI_TEMP_DIR: /tmp/openmpi
-    MPI_INST_DIR: /opt/openmpi-3.1.2
-    MPI_TEST_DIR: /tmp/openmpi-test
+    mpi_temp_dir: /tmp/openmpi
+    mpi_inst_dir: /opt/openmpi-3.1.2
+    mpi_test_dir: /tmp/openmpi-test
+    nfs_dir: /home/mpiuser/cloud
+    nfs_exports: []

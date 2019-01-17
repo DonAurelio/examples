@@ -5,9 +5,6 @@
 - name: Install openssh-server
   apt: name=openssh-server state=present
 
-# - name: Start ssh server
-#   shell: service ssh start
-
 - name: Restart SSH
   service: name=ssh state=restarted
 
@@ -22,36 +19,36 @@
   apt: name=build-essential state=present
 
 - name: Create temp directory
-  file: path={{ MPI_TEMP_DIR }} state=directory mode=0755
+  file: path={{ mpi_temp_dir }} state=directory mode=0755
 
 - name: Create install directory
-  file: path={{ MPI_INST_DIR }} state=directory
+  file: path={{ mpi_inst_dir }} state=directory
 
 - name: Untar OpenMPI
   unarchive:
     src: https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.gz
-    dest: "{{ MPI_TEMP_DIR }}"
+    dest: "{{ mpi_temp_dir }}"
     copy: no
 
 - name: Running ./configure (this can take a few seconds) ...
-  command: ./configure --prefix='{{ MPI_INST_DIR }}'
+  command: ./configure --prefix='{{ mpi_inst_dir }}'
   # args to the command module 
   args:
-    chdir: "{{ MPI_TEMP_DIR }}/openmpi-3.1.2"
+    chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
 - name: Make OpenMPI
   command: make
   args:
-    chdir: "{{ MPI_TEMP_DIR }}/openmpi-3.1.2"
+    chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
 - name: Make install OpenMPI
   command: make install
   args:
-    chdir: "{{ MPI_TEMP_DIR }}/openmpi-3.1.2"
+    chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
 - name: Create symbolic links
   file:
-    src: "{{ MPI_INST_DIR }}/bin/{{ item }}"
+    src: "{{ mpi_inst_dir }}/bin/{{ item }}"
     dest: /usr/local/bin/{{ item }}
     state: link
   with_items:
@@ -66,20 +63,32 @@
       - mpirun
 
 - name: Create mpi test directory
-  file: path="{{ MPI_TEST_DIR }}" state=directory mode=0755
+  file: path="{{ mpi_test_dir }}" state=directory mode=0755
 
 - name: Download hello world example
   get_url: 
     url: https://www.open-mpi.org/papers/workshop-2006/hello.c
-    dest: "{{ MPI_TEST_DIR }}/hello.c"
+    dest: "{{ mpi_test_dir }}/hello.c"
 
 - name: Compiling hellow world test ...
-  shell: mpicc {{ MPI_TEST_DIR }}/hello.c -o {{ MPI_TEST_DIR }}/hello
+  shell: mpicc {{ mpi_test_dir }}/hello.c -o {{ mpi_test_dir }}/hello
 
 - name: Running Hello world test ...
-  shell: mpirun {{ MPI_TEST_DIR }}/hello
+  shell: mpirun {{ mpi_test_dir }}/hello
   register: world
   become: no
 
 - debug: msg="Hello world success!"
-  when: "'Hello, world, I am 0 of 1' in world.stdout_lines"
+  when: "'Hello, World, I am 0 of 1' in world.stdout_lines"
+
+- name: Create a mpi user to run mpi applications
+   user:
+    name: mpiuser
+    password: 'o7dJI37WlZWuE'
+    groups:
+     - sudo
+    state: present
+    shell: /bin/bash       
+    system: no             
+    createhome: yes        
+    home: /home/mpiuser  
