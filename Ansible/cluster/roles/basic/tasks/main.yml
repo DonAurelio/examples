@@ -1,33 +1,85 @@
 ---
-- name: update ubuntu
+- name: Update ubuntu
   apt: update_cache=yes
 
-- name: install openssh-server
+- name: Install openssh-server
   apt: name=openssh-server state=present
 
-- name: start ssh server
-  shell: service ssh start
+# - name: Start ssh server
+#   shell: service ssh start
 
-- name: diable known host checking in SSH
+- name: Restart SSH
+  service: name=ssh state=restarted
+
+- name: Diable known host checking in SSH
   lineinfile: >
     dest=/etc/ssh/ssh_config
     line="StrictHostKeyChecking no" 
     insertafter='EOF' 
     state=present
 
-- name: install build-essential
+- name: Install build-essential
   apt: name=build-essential state=present
 
-- name: create temp directory
+- name: Create temp directory
   file: path={{ MPI_TEMP_DIR }} state=directory mode=0755
 
-- name: create install directory
+- name: Create install directory
   file: path={{ MPI_INST_DIR }} state=directory
 
-- name: untar OpenMPI
+- name: Untar OpenMPI
   unarchive:
     src: https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.gz
     dest: "{{ MPI_TEMP_DIR }}"
     copy: no
 
-- name: running ./configure (this can take a few seconds) ...
+- name: Running ./configure (this can take a few seconds) ...
+  command: ./configure --prefix='{{ MPI_INST_DIR }}'
+  # args to the command module 
+  args:
+    chdir: "{{ MPI_TEMP_DIR }}/openmpi-3.1.2"
+
+- name: Make OpenMPI
+  command: make
+  args:
+    chdir: "{{ MPI_TEMP_DIR }}/openmpi-3.1.2"
+
+- name: Make install OpenMPI
+  command: make install
+  args:
+    chdir: "{{ MPI_TEMP_DIR }}/openmpi-3.1.2"
+
+- name: Create symbolic links
+  file:
+    src: "{{ MPI_INST_DIR }}/bin/{{ item }}"
+    dest: /usr/local/bin/{{ item }}
+    state: link
+  with_items:
+      - mpic++
+      - mpicc
+      - mpiCC
+      - mpicxx
+      - mpiexec
+      - mpif77
+      - mpif90
+      - mpifort
+      - mpirun
+
+- name: Create mpi test directory
+  file: path="{{ MPI_TEST_DIR }}" state=directory mode=0755
+
+- name: Download hello world example
+  get_url: 
+    url: https://www.open-mpi.org/papers/workshop-2006/hello.c
+    dest: "{{ MPI_TEST_DIR }}/hello.c"
+
+- name: Compiling hellow world test ...
+  shell: mpicc {{ MPI_TEST_DIR }}/hello.c -o {{ MPI_TEST_DIR }}/hello
+
+- name: Running Hello world test ...
+  shell: mpirun {{ MPI_TEST_DIR }}/hello
+  register: world
+  become: no
+
+- debug: msg="Hello world success!"
+  when: "'Hello, world, I am 0 of 1' in world.stdout_lines"

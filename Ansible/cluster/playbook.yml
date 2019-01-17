@@ -1,8 +1,12 @@
 ---
   # Target group of hosts
-- hosts: vagrant_cluster
+- hosts: master
   # Become super user to run the commands
   user: vagrant
   become: true
   roles:
     - basic
+  vars:
+    MPI_TEMP_DIR: /tmp/openmpi
+    MPI_INST_DIR: /opt/openmpi-3.1.2
+    MPI_TEST_DIR: /tmp/openmpi-test
