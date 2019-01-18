@@ -1,0 +1,19 @@
+---
+- name: Update ubuntu
+  apt: update_cache=yes
+
+- name: Install required packages
+  apt: name={{ item }} state=present
+  with_items:
+    - nvidia-driver-390
+
+- name: Reboot and wait for reboot to complete
+  reboot:
+
+- name: Running nvidia-smi test
+  shell: nvidia-smi
+  register: world
+  become: no
+
+- debug: msg="Hello world success!"
+  when: "'NVIDIA-SMI 390.48' in world.stdout_lines"

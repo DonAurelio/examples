@@ -1,0 +1,2 @@
+cuda_temp_dir: /tmp/cuda
+cuda_inst_dir: /usr/local/cuda

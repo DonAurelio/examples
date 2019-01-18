@@ -91,7 +91,8 @@
 - name: Create a MPI user to run mpi applications
   user:
     name: "{{ mpi_user_name }}"
-    password: "{{ mpi_user_pass }}"
+    password: "{{ mpi_user_name | password_hash('sha512') }}"
+
     groups:
      - sudo
     state: present

@@ -16,7 +16,7 @@
 
 - name: Start nfs service.
   service: "name=nfs-kernel-server state=started enabled=yes"
-  when: "{{ nfs_exports|length }}"
+  when: nfs_exports|length
 
 - name: Check if .ssh dir exist
   stat: path="/home/{{ mpi_user_name }}/.ssh"
@@ -40,7 +40,7 @@
   become_user: "{{ mpi_user_name }}"
 
 - name: Distribute ssh public-key
-  shell: sshpass -p '{{ mpi_user_pass | password_hash('sha512') }}' ssh-copy-id -i /home/{{ mpi_user_name }}/.ssh/id_rsa {{ mpi_user_name }}@{{ item.name }}
+  shell: sshpass -p '{{ mpi_user_name }}' ssh-copy-id -i /home/{{ mpi_user_name }}/.ssh/id_rsa {{ mpi_user_name }}@{{ item.name }}
   become: yes
   become_user: "{{ mpi_user_name }}"
   with_items: "{{ mpi_hosts }}"

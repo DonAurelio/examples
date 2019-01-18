@@ -1,0 +1,19 @@
+- name: Mount nfs directories
+  # become: yes
+  # become_user: "{{ mpi_user_name }}"
+  mount:
+    fstype: "{{ item.type }}"
+    name: "{{ item.name }}"
+    src: "{{ item.src }}"
+    state: mounted
+  with_items: "{{ nfs_imports }}"
+
+# - name: Creating /etc/fstab file.
+#   become: yes
+#   become_user: "{{ mpi_user_name }}"
+#   template:
+#     src: fstab.j2
+#     dest: /etc/fstab
+#     owner: root
+#     group: root
+#     mode: 0644

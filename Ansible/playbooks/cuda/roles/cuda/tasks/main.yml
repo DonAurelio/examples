@@ -1,0 +1,13 @@
+---
+- name: Download cuda 10
+  get_url: 
+    url: https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_410.48_linux
+    dest: "{{ cuda_temp_dir }}/cuda_10.0.130_410.48_linux.run"
+    mode: +x
+
+  # /usr/local/cuda-10.0 
+- name: Install cuda 10
+  shell: "sh {{ cuda_temp_dir }}/cuda_10.0.130_410.48_linux.run --silent --toolkitpath={{ cuda_inst_dir }} --override"
+
+- name: Reboot and wait for reboot to complete
+  reboot:
