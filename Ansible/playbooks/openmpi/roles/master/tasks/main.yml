@@ -18,29 +18,45 @@
   service: "name=nfs-kernel-server state=started enabled=yes"
   when: nfs_exports|length
 
-- name: Check if .ssh dir exist
-  stat: path="/home/{{ mpi_user_name }}/.ssh"
-  register: ssh_directory_exists
+- name: Create a master MPI user
+  user:
+    name: "{{ mpi_user_name }}"
+    password: "{{ mpi_user_name | password_hash('sha512') }}"
+    state: present
+    shell: /bin/bash       
+    system: no             
+    createhome: yes        
+    home: /home/{{ mpi_user_name }}
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/id_rsa
 
-- name: Removing .ssh dir if exists
-  file: path="/home/{{ mpi_user_name }}/.ssh" state=absent
-  when: ssh_directory_exists.stat.exists == true
+# - name: Check if .ssh dir exist
+#   stat: path="/home/{{ mpi_user_name }}/.ssh"
+#   register: ssh_directory_exists
 
-- name: Creating .ssh folder
-  become_user: "{{ mpi_user_name }}"
-  file: 
-    path: "/home/{{ mpi_user_name }}/.ssh" 
-    state: directory
-    mode: 0700
+# - name: Removing .ssh dir if exists
+#   file: path="/home/{{ mpi_user_name }}/.ssh" state=absent
+#   when: ssh_directory_exists.stat.exists == true
+
+# - name: Creating .ssh folder
+#   # become: no
+#   become_user: "{{ mpi_user_name }}"
+#   # become_method: su
+#   file: 
+#     path: "/home/{{ mpi_user_name }}/.ssh" 
+#     state: directory
+#     mode: 700
+#     group: "{{ mpi_user_name }}"
+#     owner: "{{ mpi_user_name }}"
 
 # Todo: set the behabior when the key exist dir exist
-- name: Generating ssh keys
-  shell: ssh-keygen -t rsa -N '' -f /home/{{ mpi_user_name }}/.ssh/id_rsa
-  become: yes
-  become_user: "{{ mpi_user_name }}"
+# - name: Generating ssh keys
+#   become: no 
+#   become_user: "{{ mpi_user_name }}"
+#   shell: ssh-keygen -t rsa -N '' -f /home/{{ mpi_user_name }}/.ssh/id_rsa
 
-- name: Distribute ssh public-key
-  shell: sshpass -p '{{ mpi_user_name }}' ssh-copy-id -i /home/{{ mpi_user_name }}/.ssh/id_rsa {{ mpi_user_name }}@{{ item.name }}
-  become: yes
-  become_user: "{{ mpi_user_name }}"
-  with_items: "{{ mpi_hosts }}"
+
+# - name: Distribute ssh public-key
+#   shell: sshpass -p '{{ mpi_user_name }}' ssh-copy-id -i /home/{{ mpi_user_name }}/.ssh/id_rsa {{ mpi_user_name }}@{{ item.name }}
+#   become_user: "{{ mpi_user_name }}"
+#   with_items: "{{ mpi_hosts }}"

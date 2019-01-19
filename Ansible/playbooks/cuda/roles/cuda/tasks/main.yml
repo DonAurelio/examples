@@ -1,13 +1,35 @@
 ---
-- name: Download cuda 10
+
+- name: Create temp directory
+  file: path={{ cuda_temp_dir }} state=directory mode=0755
+
+- name: Download cuda 10 (please, be pacient ...)
   get_url: 
     url: https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_410.48_linux
-    dest: "{{ cuda_temp_dir }}/cuda_10.0.130_410.48_linux.run"
+    dest: "{{ cuda_temp_dir }}"
     mode: +x
 
-  # /usr/local/cuda-10.0 
-- name: Install cuda 10
-  shell: "sh {{ cuda_temp_dir }}/cuda_10.0.130_410.48_linux.run --silent --toolkitpath={{ cuda_inst_dir }} --override"
+- name: Install cuda 10 in /usr/local/ (please, be pacient ...)
+  shell: "./cuda_10.0.130_410.48_linux.run --silent --toolkit --samples --override"
+  args:
+    chdir: "{{ cuda_temp_dir }}"
+
+
+- name: Add cuda environment variables to /etc/bash.bashrc
+  blockinfile:
+    path: /etc/bash.bashrc
+    block: |
+      # Cuda environment variables
+      export PATH=$PATH:/usr/local/cuda-10.0/bin
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-10.0/lib64
+
+# This method is not working properly
+# - name: example copying file with owner and permissions
+#   copy:
+#     src: "{{ role_path }}/files/cuda.sh"
+#     dest: /etc/profile.d/
+    # mode: 644 (default)
+    # mode: 775 (custome)
 
 - name: Reboot and wait for reboot to complete
   reboot:

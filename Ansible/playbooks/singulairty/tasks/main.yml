@@ -1,0 +1,39 @@
+---
+- name: Update ubuntu
+  apt: update_cache=yes
+
+- name: Install required packages
+  apt: name={{ item }} state=present
+  with_items:
+    - build-essential
+    - libssl-dev
+    - uuid-dev
+    - squashfs-tools
+    - libseccomp-dev
+    - pkg-config
+
+- name: Download, Untar and install go
+  become: yes
+  unarchive:
+    src: https://dl.google.com/go/go1.11.linux-amd64.tar.gz
+    dest: /usr/local/go
+    copy: no
+
+- name: Adding go to the PATH
+  become: yes
+  become_user: "{{ singularity_user_name }}"
+  shell: echo 'export PATH={{ go_inst_dir }}/bin:${PATH}' >> ~/.bashrc
+
+- name: Setting up environment for go
+  shell: "{{ item }}"
+  with_items:
+    - echo 'export GOPATH=${HOME}/go' >> ~/.bashrc
+    - echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc
+    - source ~/.bashrc
+
+- name: Create singularity install dir
+  file: 
+  $ mkdir -p $GOPATH/src/github.com/sylabs
+$ cd $GOPATH/src/github.com/sylabs
+$ git clone https://github.com/sylabs/singularity.git
+$ cd singularity

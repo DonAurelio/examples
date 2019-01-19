@@ -1,0 +1,8 @@
+---
+- name: Setting up nodes
+  hosts: G
+  user: clouduser
+  become: true
+  roles: 
+    - nvidia-driver-410
+    - cuda

@@ -1,2 +1,2 @@
 nfs_imports:
-  - { name: /home/mpiuser/cloud, src: 'master:/home/mpiuser/cloud', type: nfs }
+  - { name: /home/mpiuser, src: 'master:/home/mpiuser', type: nfs }

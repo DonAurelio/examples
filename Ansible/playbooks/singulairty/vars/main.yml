@@ -1,0 +1,3 @@
+go_inst_dir: /usr/local/go
+singularity_user_name: mpiuser
+singularity_inst_dir: /home/{{ singularity_user_name }}/go

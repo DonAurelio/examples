@@ -1,19 +1,20 @@
 ---
 - name: Get nvidia repo public key
-  shell: sudo apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+  shell: apt-key adv --fetch-keys  http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 
 - name: Add nvidia.cuda repo to source list
-  shell: sudo bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list'
+  shell: bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list'
 
 - name: Update ubuntu
   apt: update_cache=yes
 
-- name: Install required packages
-  apt: name={{ item }} state=present
-  with_items:
-    - nvidia-driver-410
+- name: Install required packages (please, be pacient ...)
+  apt:
+    pkg:
+     - nvidia-driver-410
+    state: present
 
-- name: Reboot and wait for reboot to complete
+- name: Reboot machine and wait to continue (please, be pacient ...)
   reboot:
 
 - name: Running nvidia-smi test
@@ -21,5 +22,5 @@
   register: world
   become: no
 
-# - debug: msg="Hello world success!"
-#   when: "'NVIDIA-SMI 390.48' in world.stdout_lines"
+- debug: msg="Hello world success!"
+  when: "'NVIDIA-SMI 410' in world.stdout_lines"

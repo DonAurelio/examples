@@ -1,3 +1,13 @@
+- name: Create a slave MPI user
+  user:
+    name: "{{ mpi_user_name }}"
+    password: "{{ mpi_user_name | password_hash('sha512') }}"
+    state: present
+    shell: /bin/bash       
+    system: no             
+    createhome: yes        
+    home: /home/{{ mpi_user_name }}
+
 - name: Mount nfs directories
   # become: yes
   # become_user: "{{ mpi_user_name }}"
