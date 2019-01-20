@@ -3,9 +3,14 @@
   apt: update_cache=yes
 
 - name: Install required packages
-  apt: name={{ item }} state=present
-  with_items:
-    - cmake
+  apt: 
+    pkg: 
+      - build-essential
+      - cmake
+    state: present
+
+- name: Create temp directory
+  file: path={{ gmx_temp_dir }} state=directory
 
 - name: Untar gromacs 2018
   unarchive:
@@ -14,7 +19,7 @@
     copy: no
 
 - name: Create build directory
-  file: path={{ gmx_temp_dir }}/build state=directory
+  file: path={{ gmx_temp_dir }}/gromacs-2018/build state=directory
 
 - name: Config installation with cmake
   shell: |
@@ -27,24 +32,19 @@
      -DCMAKE_C_COMPILER=mpicc \
      -DGMX_BUILD_OWN_FFTW=ON \
   args:
-    chdir: "{{ gmx_temp_dir }}/build"
+    chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
 
-- name: Make and make check
+- name: make, make check and make install
   shell: "{{ item }}"
   args:
-    chdir: "{{ gmx_temp_dir }}/build"
+    chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
   with_items:
     - make
     - make check
+    - make install
 
-- name: Make install
-  shell: make install
-  become: true
-  args:
-    chdir: "{{ gmx_temp_dir }}/build"
-
-- name: Source GMXRC
-  shell: source /usr/local/gromacs/bin/GMXRC
+# - name: Source GMXRC
+#   shell: source /usr/local/gromacs/bin/GMXRC
 
 - name: Create sym links
   file:
