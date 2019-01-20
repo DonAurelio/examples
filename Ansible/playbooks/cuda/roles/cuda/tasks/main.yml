@@ -14,22 +14,5 @@
   args:
     chdir: "{{ cuda_temp_dir }}"
 
-
-- name: Add cuda environment variables to /etc/bash.bashrc
-  blockinfile:
-    path: /etc/bash.bashrc
-    block: |
-      # Cuda environment variables
-      export PATH=$PATH:/usr/local/cuda-10.0/bin
-      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-10.0/lib64
-
-# This method is not working properly
-# - name: example copying file with owner and permissions
-#   copy:
-#     src: "{{ role_path }}/files/cuda.sh"
-#     dest: /etc/profile.d/
-    # mode: 644 (default)
-    # mode: 775 (custome)
-
 - name: Reboot and wait for reboot to complete
   reboot:
