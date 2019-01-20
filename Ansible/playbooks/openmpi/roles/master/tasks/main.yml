@@ -29,34 +29,20 @@
     home: /home/{{ mpi_user_name }}
     generate_ssh_key: yes
     ssh_key_file: .ssh/id_rsa
+  tags:
+    - user
 
-# - name: Check if .ssh dir exist
-#   stat: path="/home/{{ mpi_user_name }}/.ssh"
-#   register: ssh_directory_exists
+- name: Create authorized_keys file
+  file:
+    path: /home/{{ mpi_user_name }}/.ssh/authorized_keys
+    owner: "{{ mpi_user_name }}"
+    group: "{{ mpi_user_name }}"
+    mode: 0600
+    state: touch
+  tags:
+    - pass
 
-# - name: Removing .ssh dir if exists
-#   file: path="/home/{{ mpi_user_name }}/.ssh" state=absent
-#   when: ssh_directory_exists.stat.exists == true
-
-# - name: Creating .ssh folder
-#   # become: no
-#   become_user: "{{ mpi_user_name }}"
-#   # become_method: su
-#   file: 
-#     path: "/home/{{ mpi_user_name }}/.ssh" 
-#     state: directory
-#     mode: 700
-#     group: "{{ mpi_user_name }}"
-#     owner: "{{ mpi_user_name }}"
-
-# Todo: set the behabior when the key exist dir exist
-# - name: Generating ssh keys
-#   become: no 
-#   become_user: "{{ mpi_user_name }}"
-#   shell: ssh-keygen -t rsa -N '' -f /home/{{ mpi_user_name }}/.ssh/id_rsa
-
-
-# - name: Distribute ssh public-key
-#   shell: sshpass -p '{{ mpi_user_name }}' ssh-copy-id -i /home/{{ mpi_user_name }}/.ssh/id_rsa {{ mpi_user_name }}@{{ item.name }}
-#   become_user: "{{ mpi_user_name }}"
-#   with_items: "{{ mpi_hosts }}"
+- name: Place public key into authorized_keys
+  shell: cat /home/{{ mpi_user_name }}/.ssh/id_rsa.pub >> /home/{{ mpi_user_name }}/.ssh/authorized_keys
+  tags:
+    - pass

@@ -26,68 +26,68 @@
   tags:
     - ssh
 
-# - name: Create MPI temp directory
-#   file: path={{ mpi_temp_dir }} state=directory mode=0755
+- name: Create MPI temp directory
+  file: path={{ mpi_temp_dir }} state=directory mode=0755
 
-# - name: Create MPI install directory
-#   file: path={{ mpi_inst_dir }} state=directory
+- name: Create MPI install directory
+  file: path={{ mpi_inst_dir }} state=directory
 
-# - name: Untar MPI
-#   unarchive:
-#     src: https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.gz
-#     dest: "{{ mpi_temp_dir }}"
-#     copy: no
+- name: Untar MPI
+  unarchive:
+    src: https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.gz
+    dest: "{{ mpi_temp_dir }}"
+    copy: no
 
-# - name: Running MPI ./configure (this can take a few seconds) ...
-#   command: ./configure --prefix='{{ mpi_inst_dir }}'
-#   # args to the command module 
-#   args:
-#     chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
+- name: Running MPI ./configure (this can take a few seconds) ...
+  command: ./configure --prefix='{{ mpi_inst_dir }}'
+  # args to the command module 
+  args:
+    chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
-# - name: Make MPI
-#   command: make
-#   args:
-#     chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
+- name: Make MPI
+  command: make
+  args:
+    chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
-# - name: Make install MPI
-#   command: make install
-#   args:
-#     chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
+- name: Make install MPI
+  command: make install
+  args:
+    chdir: "{{ mpi_temp_dir }}/openmpi-3.1.2"
 
-# - name: Create MPI sym links
-#   file:
-#     src: "{{ mpi_inst_dir }}/bin/{{ item }}"
-#     dest: /usr/local/bin/{{ item }}
-#     state: link
-#   with_items:
-#       - mpic++
-#       - mpicc
-#       - mpiCC
-#       - mpicxx
-#       - mpiexec
-#       - mpif77
-#       - mpif90
-#       - mpifort
-#       - mpirun
+- name: Create MPI sym links
+  file:
+    src: "{{ mpi_inst_dir }}/bin/{{ item }}"
+    dest: /usr/local/bin/{{ item }}
+    state: link
+  with_items:
+      - mpic++
+      - mpicc
+      - mpiCC
+      - mpicxx
+      - mpiexec
+      - mpif77
+      - mpif90
+      - mpifort
+      - mpirun
 
-# - name: Create MPI test directory
-#   file: path="{{ mpi_test_dir }}" state=directory mode=0755
+- name: Create MPI test directory
+  file: path="{{ mpi_test_dir }}" state=directory mode=0755
 
-# - name: Download hello world example
-#   get_url: 
-#     url: https://www.open-mpi.org/papers/workshop-2006/hello.c
-#     dest: "{{ mpi_test_dir }}/hello.c"
+- name: Download hello world example
+  get_url: 
+    url: https://www.open-mpi.org/papers/workshop-2006/hello.c
+    dest: "{{ mpi_test_dir }}/hello.c"
 
-# - name: Compiling hellow world test ...
-#   shell: mpicc {{ mpi_test_dir }}/hello.c -o {{ mpi_test_dir }}/hello
+- name: Compiling hellow world test ...
+  shell: mpicc {{ mpi_test_dir }}/hello.c -o {{ mpi_test_dir }}/hello
 
-# - name: Running Hello world test ...
-#   shell: mpirun {{ mpi_test_dir }}/hello
-#   register: world
-#   become: no
+- name: Running Hello world test ...
+  shell: mpirun {{ mpi_test_dir }}/hello
+  register: world
+  become: no
 
-# - debug: msg="Hello world success!"
-#   when: "'Hello, World, I am 0 of 1' in world.stdout_lines"
+- debug: msg="Hello world success!"
+  when: "'Hello, World, I am 0 of 1' in world.stdout_lines"
 
 - name: Create /etc/hosts directory
   template:
