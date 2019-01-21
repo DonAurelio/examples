@@ -1,7 +1,9 @@
 ---
 - name: Setting up nodes
-  hosts: G
-  user: clouduser
+  hosts: 
+    - A
+    - B
+  user: vagrant
   become: true
   roles: 
     - nvidia-driver-410
