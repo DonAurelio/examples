@@ -35,7 +35,7 @@
      -DCMAKE_CXX_COMPILER=mpic++ \ 
      -DCMAKE_C_COMPILER=mpicc \
      -DGMX_BUILD_OWN_FFTW=ON
-pwd  args:
+  args:
     chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
 
 - name: make, make check and make install
