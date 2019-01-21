@@ -1,0 +1,7 @@
+---
+- name: Setting up master node
+  hosts: single
+  user: vagrant
+  become: yes
+  roles: 
+    - basic
