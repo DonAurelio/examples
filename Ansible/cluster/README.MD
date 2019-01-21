@@ -28,7 +28,7 @@ Host master
   User vagrant
   Port 2222
   ...
-  IdentityFile /home/aureavm/Desktop/vagrant/cluster/.vagrant/machines/master/virtualbox/private_key
+  IdentityFile /home/username/Desktop/vagrant/cluster/.vagrant/machines/master/virtualbox/private_key
   ...
 
 Host slave_1
@@ -36,7 +36,7 @@ Host slave_1
   User vagrant
   Port 2200
   ...
-  IdentityFile /home/aureavm/Desktop/vagrant/cluster/.vagrant/machines/slave_1/virtualbox/private_key
+  IdentityFile /home/username/Desktop/vagrant/cluster/.vagrant/machines/slave_1/virtualbox/private_key
   ...
 
 Host slave_2
@@ -44,7 +44,7 @@ Host slave_2
   User vagrant
   Port 2201
   ...
-  IdentityFile /home/aureavm/Desktop/vagrant/cluster/.vagrant/machines/slave_2/virtualbox/private_key
+  IdentityFile /home/username/Desktop/vagrant/cluster/.vagrant/machines/slave_2/virtualbox/private_key
   ...
 ```
 
@@ -71,9 +71,9 @@ nano /etc/ansible/hosts
 
 ```sh
 [vagrant_cluster]
-master ansible_host=127.0.0.1 ansible_port=2222 ansible_user=vagrant ansible_ssh_private_key_file=/home/aureavm/Desktop/vagrant/cluster/.vagrant/machines/master/virtualbox/private_key
-slave_1 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_ssh_private_key_file=/home/aureavm/Desktop/vagrant/cluster/.vagrant/machines/slave_1/virtualbox/private_key
-slave_2 ansible_host=127.0.0.1 ansible_port=2201 ansible_user=vagrant ansible_ssh_private_key_file=/home/aureavm/Desktop/vagrant/cluster/.vagrant/machines/slave_2/virtualbox/private_key
+master ansible_host=127.0.0.1 ansible_port=2222 ansible_user=vagrant ansible_ssh_private_key_file=/home/username/Desktop/vagrant/cluster/.vagrant/machines/master/virtualbox/private_key
+slave_1 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_ssh_private_key_file=/home/username/Desktop/vagrant/cluster/.vagrant/machines/slave_1/virtualbox/private_key
+slave_2 ansible_host=127.0.0.1 ansible_port=2201 ansible_user=vagrant ansible_ssh_private_key_file=/home/username/Desktop/vagrant/cluster/.vagrant/machines/slave_2/virtualbox/private_key
 ```
 
 ## References 

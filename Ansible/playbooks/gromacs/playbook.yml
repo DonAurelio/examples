@@ -1,8 +1,7 @@
 ---
 - name: Setting up gromacs 2018
-  hosts: single
+  hosts: A
   user: vagrant
-  become: true
   roles: 
     - basic
 

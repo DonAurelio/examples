@@ -10,7 +10,9 @@
     state: present
 
 - name: Create temp directory
-  file: path={{ gmx_temp_dir }} state=directory
+  file: 
+    path: "{{ gmx_temp_dir }}" 
+    state: directory
 
 - name: Untar gromacs 2018
   unarchive:
@@ -19,7 +21,9 @@
     copy: no
 
 - name: Create build directory
-  file: path={{ gmx_temp_dir }}/gromacs-2018/build state=directory
+  file: 
+    path: "{{ gmx_temp_dir }}/gromacs-2018/build" 
+    state: directory
 
 - name: Config installation with cmake
   shell: |
@@ -30,8 +34,8 @@
      -DCMAKE_C_COMPILER=nvcc \
      -DCMAKE_CXX_COMPILER=mpic++ \ 
      -DCMAKE_C_COMPILER=mpicc \
-     -DGMX_BUILD_OWN_FFTW=ON \
-  args:
+     -DGMX_BUILD_OWN_FFTW=ON
+pwd  args:
     chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
 
 - name: make, make check and make install
@@ -44,6 +48,7 @@
     - make check
 
 - name: make, make check and make install
+  become: yes
   shell: "{{ item }}"
   args:
     chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
@@ -52,6 +57,8 @@
 
 - name: Source GMXRC
   shell: source /usr/local/gromacs/bin/GMXRC
+  args:
+    executable: /bin/bash
 
 - name: Create sym links
   file:
@@ -60,3 +67,4 @@
     state: link
   with_items:
       - gmx_mpi
+

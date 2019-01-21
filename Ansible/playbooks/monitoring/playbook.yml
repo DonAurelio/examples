@@ -1,7 +1,18 @@
 ---
 - name: Setting up master node
   hosts:
-    - single
+    - A
+    - B
+    - C
+    - D
+    - E
+    - F
+    - G
+    - H
+    - I
+    - J
+    - K
+    - L
   user: vagrant
   become: true
   roles: 
