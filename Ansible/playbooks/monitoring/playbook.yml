@@ -1,0 +1,11 @@
+---
+- name: Setting up master node
+  hosts:
+    - single
+  user: vagrant
+  become: true
+  roles: 
+    - basic
+  vars:
+    cron_dir: /home/vagrant/monitor
+    cron_user: vagrant

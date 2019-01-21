@@ -19,10 +19,16 @@
     dest: /usr/local/
     copy: no
 
-# - name: Adding go to the PATH
-#   become: yes
-#   become_user: "{{ singularity_user_name }}"
-#   shell: echo 'export PATH={{ go_inst_dir }}/bin:${PATH}' >> ~/.bashrc
+- name: Adding go to the PATH
+  shell: echo 'export PATH=/usr/local/go/bin:${PATH}' >> ~/.bashrc
+
+# The syngulairty source is build in home and instaled in /usr/local
+# when we need to uninstall singulairty we will need the build folder
+# in ~/singularity
+- name: Clone singularity source form Git 
+  git:
+    repo: https://github.com/sylabs/singularity.git
+    dest: ~/singularity/src/github.com/sylabs
 
 # - name: Setting up environment for go
 #   shell: "{{ item }}"

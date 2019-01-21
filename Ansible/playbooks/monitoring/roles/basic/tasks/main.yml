@@ -1,0 +1,36 @@
+---
+- name: Creating monitor crontab dir
+  file:
+    path: "{{ cron_dir }}"
+    state: directory
+    group: "{{ cron_user }}"
+    owner: "{{ cron_user }}"
+
+- name: Copying monior.sh file
+  copy:
+    src: "{{ role_path }}/files/monitor.sh"
+    dest: "{{ cron_dir }}/monitor.sh"
+    group: "{{ cron_user }}"
+    owner: "{{ cron_user }}"
+    mode: +x
+
+- name: Install required packages
+  apt:
+    pkg:
+      - sysstat 
+      - nicstat
+    state: present
+
+- name: Creates a cron job
+  cron:
+    name: system monitor
+    user: "{{ cron_user }}"
+    minute: "*/1"
+    job: |
+      {{ cron_dir }}/monitor.sh -cpu -memory -disk $(lsblk | grep disk | awk 'NR==1{printf "%s",$1}') -network $(ls /sys/class/net | awk 'NR==2{print }') -gpu >> {{ cron_dir }}/out.log 2>> {{ cron_dir }}/err.log
+
+- name: Restart cron service
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: cron
