@@ -1,7 +1,7 @@
 ---
 - name: Creating monitor crontab dir
   file:
-    path: "{{ cron_dir }}"
+    path: "/home/{{ cron_user }}/monitor/"
     state: directory
     group: "{{ cron_user }}"
     owner: "{{ cron_user }}"
@@ -9,7 +9,7 @@
 - name: Copying monior.sh file
   copy:
     src: "{{ role_path }}/files/monitor.sh"
-    dest: "{{ cron_dir }}/monitor.sh"
+    dest: "/home/{{ cron_user }}/monitor/monitor.sh"
     group: "{{ cron_user }}"
     owner: "{{ cron_user }}"
     mode: +x
@@ -21,13 +21,25 @@
       - nicstat
     state: present
 
+- name: Get disk name
+  shell: lsblk | grep disk | awk 'NR==1{printf "%s",$1}'
+  register: disk_name
+
+- name: Get network interface name
+  shell: ls /sys/class/net | awk 'NR==2{print }'
+  register: net_iface_name
+
+- name: Get hostname
+  shell: hostname
+  register: hostname
+
 - name: Creates a cron job
   cron:
     name: system monitor
     user: "{{ cron_user }}"
     minute: "*/1"
     job: |
-      /home/mpiuser/monitor.sh -cpu -memory -disk $(lsblk | grep disk | awk 'NR==1{printf "%s",$1}') -network $(ls /sys/class/net | awk 'NR==2{print }') -gpu >>  /home/mpiuser/$(hostname).log 2>> /home/mpiuser/$(hostname).err
+      /home/{{ cron_user }}/monitor/monitor.sh -cpu -memory -disk {{ disk_name.stdout }} -network {{ net_iface_name.stdout }} -gpu >>  /home/{{ cron_user }}/monitor/{{ hostname.stdout }}.log 2>> /home/{{ cron_user }}/monitor/{{ hostname.stdout }}.err
 
 - name: Restart cron service
   systemd:
