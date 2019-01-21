@@ -46,3 +46,8 @@
   shell: cat /home/{{ mpi_user_name }}/.ssh/id_rsa.pub >> /home/{{ mpi_user_name }}/.ssh/authorized_keys
   tags:
     - pass
+
+# This is necesary because ansible create the home directory with 
+# root as group and owner. So we need MPI user be the group and owner
+- name: Change MPI user home dir permissions
+  shell: chown {{ mpi_user_name }}:{{ mpi_user_name }} /home/{{ mpi_user_name }}

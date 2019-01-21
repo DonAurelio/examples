@@ -69,6 +69,8 @@
       - mpif90
       - mpifort
       - mpirun
+      # "orted" is one of the helper executables that Open MPI uses to launch processes on remote nodes 
+      - orted
 
 - name: Create MPI test directory
   file: path="{{ mpi_test_dir }}" state=directory mode=0755

@@ -5,6 +5,11 @@ This playbook includes:
 * OpenMPI install
 * Passworldless setting
 * NFS setting up (/home/mpiuser) by default
+* MPI Processes can be lauched from any cluster node
+
+Some requirements for OpenMPI 3.1.2
+
+* Hostnames can be written whit _ beacuse it cause erros when parsing hostnames like "slave_1". 
 
 ## Run
 
