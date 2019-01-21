@@ -35,16 +35,23 @@
     chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
 
 - name: make, make check and make install
+  become: no
   shell: "{{ item }}"
   args:
     chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
   with_items:
     - make
     - make check
+
+- name: make, make check and make install
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ gmx_temp_dir }}/gromacs-2018/build"
+  with_items:
     - make install
 
-# - name: Source GMXRC
-#   shell: source /usr/local/gromacs/bin/GMXRC
+- name: Source GMXRC
+  shell: source /usr/local/gromacs/bin/GMXRC
 
 - name: Create sym links
   file:

@@ -27,7 +27,7 @@
     user: "{{ cron_user }}"
     minute: "*/1"
     job: |
-      {{ cron_dir }}/monitor.sh -cpu -memory -disk $(lsblk | grep disk | awk 'NR==1{printf "%s",$1}') -network $(ls /sys/class/net | awk 'NR==2{print }') -gpu >> {{ cron_dir }}/out.log 2>> {{ cron_dir }}/err.log
+      /home/mpiuser/monitor.sh -cpu -memory -disk $(lsblk | grep disk | awk 'NR==1{printf "%s",$1}') -network $(ls /sys/class/net | awk 'NR==2{print }') -gpu >>  /home/mpiuser/$(hostname).log 2>> /home/mpiuser/$(hostname).err
 
 - name: Restart cron service
   systemd:
