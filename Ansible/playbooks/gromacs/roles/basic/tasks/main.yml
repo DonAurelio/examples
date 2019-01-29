@@ -62,6 +62,7 @@
     executable: /bin/bash
 
 - name: Create sym links
+  become: yes
   file:
     src: /usr/local/gromacs/bin/{{ item }}
     dest: /usr/local/bin/{{ item }}
