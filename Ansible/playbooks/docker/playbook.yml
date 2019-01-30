@@ -1,0 +1,11 @@
+---
+- name: Setting up nodes with docker
+  hosts: 
+    - single
+  user: vagrant
+  become: true
+  roles: 
+    - docker.io
+    - nvidia-docker2
+  vars:
+    user: mpiuser

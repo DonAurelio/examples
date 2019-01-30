@@ -5,8 +5,8 @@
 
 - name: Add nvidia-docker source list
   shell: |
-  curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
-  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+    curl -s -L https://nvidia.github.io/nvidia-docker/$(. /etc/os-release;echo $ID$VERSION_ID)/nvidia-docker.list | \
+    sudo tee /etc/apt/sources.list.d/nvidia-docker.list
 
 - name: Update ubuntu
   apt: update_cache=yes
